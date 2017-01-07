@@ -56,7 +56,6 @@ public class PlanetFragment : MonoBehaviour {
     {
         uint grosCashValue = ResourceManager.GetPrefab("GrosCashSale").GetComponent<GrosCashSale>().GetValue();
         uint petiteMonnaieValue = ResourceManager.GetPrefab("PetiteMonnaie").GetComponent<PetitCashSale>().GetValue();
-        Vector3 spawnPos = transform.position;
 
         uint cumulativePointValueSpawned = 0;
         while (cumulativePointValueSpawned < TotalPointValue)
