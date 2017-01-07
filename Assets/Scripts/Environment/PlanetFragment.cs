@@ -6,7 +6,6 @@ public class PlanetFragment : MonoBehaviour {
     public int TotalPointValue = 0;
     public float GrosCashNormalDropRate = 0.0f;
     public float GrosCashMegaLootDropRate = 0.0f;
-    public float VolcanoSpawnRate = 0.0f;
     public float RepawnTime = 0.0f;
     public float SpawnOffset = 1.0f;
 
@@ -26,6 +25,13 @@ public class PlanetFragment : MonoBehaviour {
     {
         GameObject layer1 = transform.Find("graphics/Layer1Fragment").gameObject;
         layer1.GetComponent<Renderer>().enabled = false;
+
+        if (!m_Volcano)
+        {
+            m_Volcano = (GameObject)Instantiate(ResourceManager.GetPrefab("Volcano"), transform.position, transform.rotation);
+            m_Volcano.transform.parent = GameObject.Find("Volcanos").transform;
+        }
+
         GenerateResources(true);
 
         Timer.Instance.Request(RepawnTime, () => Respawn());
@@ -43,15 +49,7 @@ public class PlanetFragment : MonoBehaviour {
 
     public void OnDamageTaken()
     {
-        if (!GetComponentInParent<DamageComponent>().GetIsDead())
-        {
-            if (!m_Volcano && Random.Range(0.0f, 1.0f) < VolcanoSpawnRate)
-            {
-                m_Volcano = (GameObject)Instantiate(ResourceManager.GetPrefab("Volcano"), transform.position, transform.rotation);
-                m_Volcano.transform.parent = GameObject.Find("Volcanos").transform;
-            }
-            GenerateResources(false);
-        }
+        GenerateResources(false);
     }
 
     private void GenerateResources(bool bigLoot)
