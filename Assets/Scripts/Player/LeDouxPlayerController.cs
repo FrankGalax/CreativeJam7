@@ -17,6 +17,9 @@ public class LeDouxPlayerController : MonoBehaviour
     private Vector3 m_Velocity;
     private bool m_ChangedDirection;
     private Vector3 m_NextCameraPosition;
+    private bool m_offensiveBonusIsDown;
+    private bool m_defensiveBonusIsDown;
+
 
     void Awake()
     {
@@ -36,6 +39,7 @@ public class LeDouxPlayerController : MonoBehaviour
 
         UpdateMovement();
         UpdateCamera();
+        UpdateActions();
     }
 
     private void UpdateMovement()
@@ -83,4 +87,24 @@ public class LeDouxPlayerController : MonoBehaviour
         camera.transform.position = Vector3.Lerp(camera.transform.position, m_NextCameraPosition, 6.0f * Time.deltaTime);
         camera.transform.rotation = Quaternion.LookRotation((transform.position - camera.transform.position).normalized, m_Tangent);
     }
+    private void UpdateActions()
+    {
+        bool offensiveBonus = Input.GetButtonDown("Fire1");
+        bool defensiveBonus = Input.GetButtonDown("Fire2");
+
+        if (offensiveBonus && !m_offensiveBonusIsDown)
+        {
+            FatAssShip motherShip = GetComponent<FatAssShip>();
+            motherShip.SpendDaMoneyz(EDouxDouxUpgrades.EDouxDouxUpgrades_OFFENCE);
+        }
+        else if (defensiveBonus && !m_defensiveBonusIsDown)
+        {
+            FatAssShip motherShip = GetComponent<FatAssShip>();
+            motherShip.SpendDaMoneyz(EDouxDouxUpgrades.EDouxDouxUpgrades_DEFENCE);
+        }
+
+        m_offensiveBonusIsDown = offensiveBonus;
+        m_defensiveBonusIsDown = defensiveBonus;
+    }
+
 }
