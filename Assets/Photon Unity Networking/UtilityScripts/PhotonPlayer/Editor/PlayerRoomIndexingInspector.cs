@@ -20,7 +20,6 @@ namespace ExitGames.UtilityScripts
 	public class PlayerRoomIndexingInspector : Editor {
 
 		PlayerRoomIndexing _target;
-	 	int localPlayerIndex;
 
 		void OnEnable () {
 			_target = (PlayerRoomIndexing)target;

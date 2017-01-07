@@ -5,18 +5,18 @@ using System.Linq;
 
 public class INetwork : PunGameSingleton<INetwork>
 {
-    private bool m_isSinglePlayer;
+    private bool m_IsSinglePlayer;
 
     public bool IsSinglePlayer
     {
         get
         {
-            return m_isSinglePlayer;
+            return m_IsSinglePlayer;
         }
         set
         {
-            m_isSinglePlayer = value;
-            PhotonNetwork.offlineMode = m_isSinglePlayer;
+            m_IsSinglePlayer = value;
+            PhotonNetwork.offlineMode = m_IsSinglePlayer;
         }
     }
 
@@ -37,17 +37,7 @@ public class INetwork : PunGameSingleton<INetwork>
 
     public void SetRoomStarted()
     {
-        PhotonNetwork.room.open = false;
-    }
-
-    public void SetTeam(string team)
-    {
-        PhotonNetwork.player.SetCustomProperties(new Hashtable() { { "Team", team } });
-    }
-
-    public string GetTeam()
-    {
-        return PhotonNetwork.player.customProperties["Team"] == null ? null : PhotonNetwork.player.customProperties["Team"].ToString();
+        PhotonNetwork.room.IsOpen = false;
     }
 
     public void SetId(int id)
@@ -57,7 +47,7 @@ public class INetwork : PunGameSingleton<INetwork>
 
     public int GetId()
     {
-        return PhotonNetwork.player.customProperties["Id"] == null ? -1 : int.Parse(PhotonNetwork.player.customProperties["Id"].ToString());
+        return PhotonNetwork.player.CustomProperties["Id"] == null ? -1 : int.Parse(PhotonNetwork.player.CustomProperties["Id"].ToString());
     }
 
     public void SetCharacterId(int characterId)
@@ -67,19 +57,19 @@ public class INetwork : PunGameSingleton<INetwork>
 
     public int GetCharacterId()
     {
-        return PhotonNetwork.player.customProperties["CharacterId"] == null ? -1 : int.Parse(PhotonNetwork.player.customProperties["CharacterId"].ToString());
+        return PhotonNetwork.player.CustomProperties["CharacterId"] == null ? -1 : int.Parse(PhotonNetwork.player.CustomProperties["CharacterId"].ToString());
     }
 
     public string GetOtherPlayerTeam(PhotonPlayer otherPlayer)
     {
-        return otherPlayer.customProperties["Team"] == null ?
+        return otherPlayer.CustomProperties["Team"] == null ?
             null :
-            otherPlayer.customProperties["Team"].ToString();
+            otherPlayer.CustomProperties["Team"].ToString();
     }
 
     public void SetPlayerName(string name)
     {
-        PhotonNetwork.player.name = name;
+        PhotonNetwork.player.NickName = name;
     }
 
     public int GetViewId(GameObject gameObject)
@@ -105,12 +95,12 @@ public class INetwork : PunGameSingleton<INetwork>
 
     public string GetPlayerName()
     {
-        return PhotonNetwork.player.name;
+        return PhotonNetwork.player.NickName;
     }
 
     public bool IsMaster()
     {
-        return PhotonNetwork.player.isMasterClient;
+        return PhotonNetwork.player.IsMasterClient;
     }
 
     public void RPC(GameObject gameObject, string methodName, PhotonTargets target, params object[] parameters)
@@ -165,7 +155,7 @@ public class INetwork : PunGameSingleton<INetwork>
     public int GetPlayerCountInTeam(string team)
     {
         return PhotonNetwork.playerList.Count(
-            p => p.customProperties.ContainsKey("team") && p.customProperties["team"].ToString().Equals(team)
+            p => p.CustomProperties.ContainsKey("team") && p.CustomProperties["team"].ToString().Equals(team)
         );
     }
 
