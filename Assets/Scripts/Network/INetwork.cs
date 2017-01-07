@@ -50,6 +50,16 @@ public class INetwork : PunGameSingleton<INetwork>
         return PhotonNetwork.player.CustomProperties["Id"] == null ? -1 : int.Parse(PhotonNetwork.player.CustomProperties["Id"].ToString());
     }
 
+    public void SetShipId(int id)
+    {
+        PhotonNetwork.player.SetCustomProperties(new Hashtable() { { "ShipId", id } });
+    }
+
+    public int GetShipId()
+    {
+        return PhotonNetwork.player.CustomProperties["ShipId"] == null ? -1 : int.Parse(PhotonNetwork.player.CustomProperties["ShipId"].ToString());
+    }
+
     public void SetCharacterId(int characterId)
     {
         PhotonNetwork.player.SetCustomProperties(new Hashtable() { { "CharacterId", characterId } });
