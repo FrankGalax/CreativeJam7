@@ -10,6 +10,8 @@ public class PlanetFragment : MonoBehaviour {
     public float RepawnTime = 0.0f;
     public float SpawnOffset = 1.0f;
 
+    GameObject m_Volcano;
+
     // Use this for initialization
     void Start () {
 
@@ -17,7 +19,7 @@ public class PlanetFragment : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-	    
+
 	}
 
     public void HandleDeath()
@@ -43,11 +45,10 @@ public class PlanetFragment : MonoBehaviour {
     {
         if (!GetComponentInParent<DamageComponent>().GetIsDead())
         {
-            if (Random.Range(0.0f, 1.0f) < VolcanoSpawnRate)
+            if (!m_Volcano && Random.Range(0.0f, 1.0f) < VolcanoSpawnRate)
             {
-                // TODO : don't instanciate if on top of an other one
-                GameObject volcano = (GameObject)Instantiate(ResourceManager.GetPrefab("Volcano"), transform.position, transform.rotation);
-                volcano.transform.parent = GameObject.Find("Volcanos").transform;
+                m_Volcano = (GameObject)Instantiate(ResourceManager.GetPrefab("Volcano"), transform.position, transform.rotation);
+                m_Volcano.transform.parent = GameObject.Find("Volcanos").transform;
             }
             GenerateResources(false);
         }

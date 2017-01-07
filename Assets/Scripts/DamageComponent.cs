@@ -29,16 +29,17 @@ public class DamageComponent : MonoBehaviour {
             return;
 
         --m_CurrentHealth;
-        SendMessage("OnDamageTaken");
-
-        m_OnCooldown = true;
-        Timer.Instance.Request(DamageCooldown, () => { m_OnCooldown = false; });
-
         if (m_CurrentHealth == 0)
         {
             Die();
         }
+        else
+        {
+            SendMessage("OnDamageTaken");
 
+            m_OnCooldown = true;
+            Timer.Instance.Request(DamageCooldown, () => { m_OnCooldown = false; });
+        }
     }
 
     public void Die()

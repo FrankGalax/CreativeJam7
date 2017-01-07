@@ -12,7 +12,7 @@ public class Volcano : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-        Timer.Instance.Request(Lifetime, () => { Destroy(this); });
+        Timer.Instance.Request(Lifetime, () => { Destroy(gameObject); });
         m_IsComingOut = true;
     }
 	
