@@ -5,45 +5,52 @@ public class PlanetFragment : MonoBehaviour {
 
     public int TotalPointValue = 0;
     public float GrosCashDropRate = 0.0f;
+    public float VolcanoSpawnRate = 0.0f;
+    public float RepawnTime = 0.0f;
+    public float SpawnOffset = 1.0f;
 
     // Use this for initialization
     void Start () {
-
+        GetComponentInParent<DamageComponent>().TakeDamage();
     }
 	
 	// Update is called once per frame
 	void Update () {
-	
+	    
 	}
 
-    public void TakeDamage()
+    public void HandleDeath()
     {
-        Destroy();
-        GenerateResources();
+        Timer.Instance.Request(RepawnTime, () => Respawn());
     }
 
-    private void Destroy()
+    public void Respawn()
     {
-        GameObject layer1 =  transform.Find("Layer1Graphics/Layer1Fragment").gameObject;
-        if (layer1.GetComponent<Renderer>().enabled)
+        GetComponentInParent<DamageComponent>().Revive();
+    }
+
+    public void OnDamageTaken()
+    {
+        DamageComponent damageComponent = GetComponentInParent<DamageComponent>();
+        GameObject layer1 = transform.Find("graphics/Layer1Fragment").gameObject;
+        if (damageComponent.GetIsDead())
         {
             layer1.GetComponent<Renderer>().enabled = false;
         }
-        else
+        else if (Random.Range(0.0f, 1.0f) < VolcanoSpawnRate)
         {
-            GameObject layer2 = transform.Find("Layer2Graphics/Layer2Fragment").gameObject;
-            if (layer2.GetComponent<Renderer>().enabled)
-            {
-                layer2.GetComponent<Renderer>().enabled = false;
-                Instantiate(ResourceManager.GetPrefab("Volcano"), layer2.transform.position, layer2.transform.rotation);
-            }
+            // TODO : don't instanciate if on top of an other one
+            Instantiate(ResourceManager.GetPrefab("Volcano"), transform.position, transform.rotation);
         }
+
+        GenerateResources();
     }
 
     private void GenerateResources()
     {
         uint grosCashValue = ResourceManager.GetPrefab("GrosCashSale").GetComponent<GrosCashSale>().GetValue();
         uint petiteMonnaieValue = ResourceManager.GetPrefab("PetiteMonnaie").GetComponent<PetitCashSale>().GetValue();
+        Vector3 spawnPos = transform.position;
 
         uint cumulativePointValueSpawned = 0;
         while (cumulativePointValueSpawned < TotalPointValue)
