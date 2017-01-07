@@ -21,6 +21,10 @@ public class PlanetFragment : MonoBehaviour {
 
     public void HandleDeath()
     {
+        GameObject layer1 = transform.Find("graphics/Layer1Fragment").gameObject;
+        layer1.GetComponent<Renderer>().enabled = false;
+        GenerateResources();
+
         Timer.Instance.Request(RepawnTime, () => Respawn());
     }
 
@@ -29,22 +33,23 @@ public class PlanetFragment : MonoBehaviour {
         GetComponentInParent<DamageComponent>().Revive();
     }
 
+    public bool IsDestroyed()
+    {
+        return GetComponentInParent<DamageComponent>().GetIsDead();
+    }
+
     public void OnDamageTaken()
     {
-        DamageComponent damageComponent = GetComponentInParent<DamageComponent>();
-        GameObject layer1 = transform.Find("graphics/Layer1Fragment").gameObject;
-        if (damageComponent.GetIsDead())
+        if (!GetComponentInParent<DamageComponent>().GetIsDead())
         {
-            layer1.GetComponent<Renderer>().enabled = false;
+            if (Random.Range(0.0f, 1.0f) < VolcanoSpawnRate)
+            {
+                // TODO : don't instanciate if on top of an other one
+                GameObject volcano = (GameObject)Instantiate(ResourceManager.GetPrefab("Volcano"), transform.position, transform.rotation);
+                volcano.transform.parent = GameObject.Find("Volcanos").transform;
+            }
+            GenerateResources();
         }
-        else if (Random.Range(0.0f, 1.0f) < VolcanoSpawnRate)
-        {
-            // TODO : don't instanciate if on top of an other one
-            GameObject volcano = (GameObject)Instantiate(ResourceManager.GetPrefab("Volcano"), transform.position, transform.rotation);
-            volcano.transform.parent = GameObject.Find("Volcanos").transform;
-        }
-
-        GenerateResources();
     }
 
     private void GenerateResources()

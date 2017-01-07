@@ -12,10 +12,14 @@ public class VaisseauQuiJoueAfuckinMinecraft : MonoBehaviour
 
     float m_fuckShitUpBonusRemainingDuration = 0.0f;
     float m_fuckShitUpRange;
+
+    PlanetFragment m_bestTarget;
+
     // Use this for initialization
     void Start ()
     {
         m_fuckShitUpRange = fuckShitUpBaseRange;
+        m_bestTarget = null;
 	}
 	
 	// Update is called once per frame
@@ -28,6 +32,18 @@ public class VaisseauQuiJoueAfuckinMinecraft : MonoBehaviour
             {
                 m_fuckShitUpRange = fuckShitUpBaseRange;
             }
+        }
+
+        PlanetFragment frag = FindBestTarget();
+        if (m_bestTarget != frag)
+        {
+            if (m_bestTarget != null)
+            {
+                m_bestTarget.gameObject.transform.localScale = Vector3.one;
+            }
+
+            frag.gameObject.transform.localScale = 1.5f * Vector3.one;
+            m_bestTarget = frag;
         }
 	}
 
@@ -54,7 +70,7 @@ public class VaisseauQuiJoueAfuckinMinecraft : MonoBehaviour
     PlanetFragment FindBestTarget()
     {
         PlanetFragment[] fragments = GameObject.FindObjectsOfType<PlanetFragment>();
-        float bestDot = float.MaxValue;
+        float bestDot = float.MinValue;
         PlanetFragment bestFrag = null;
 
         Planet planet = GameObject.FindObjectOfType<Planet>();
@@ -68,10 +84,10 @@ public class VaisseauQuiJoueAfuckinMinecraft : MonoBehaviour
 
             if (distanceFuckingRadial <= m_fuckShitUpRange && fragment.GetComponentInChildren<Renderer>().isVisible)
             {
-                Camera cam = Camera.main;
-                float dot = Vector3.Dot(cam.transform.forward, fragment.transform.position - cam.transform.forward);
-                
-                if (dot < bestDot)
+                Vector3 distUnwrapperSurUnPlane = Vector3.ProjectOnPlane(fragment.gameObject.transform.position - transform.position, transform.up).normalized;
+                float dot = Vector3.Dot(transform.forward, distUnwrapperSurUnPlane) / distanceFuckingRadial;
+
+                if (dot > bestDot && (Vector3.Angle(distUnwrapperSurUnPlane, transform.forward) <= 60.0f || distanceFuckingRadial < 50.0f))
                 {
                     bestDot = dot;
                     bestFrag = fragment;
