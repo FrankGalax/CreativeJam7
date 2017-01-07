@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class NewBehaviourScript : MonoBehaviour {
+public class PlanetFragment : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
