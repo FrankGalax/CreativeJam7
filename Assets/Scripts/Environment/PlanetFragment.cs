@@ -4,14 +4,15 @@ using System.Collections;
 public class PlanetFragment : MonoBehaviour {
 
     public int TotalPointValue = 0;
-    public float GrosCashDropRate = 0.0f;
+    public float GrosCashNormalDropRate = 0.0f;
+    public float GrosCashMegaLootDropRate = 0.0f;
     public float VolcanoSpawnRate = 0.0f;
     public float RepawnTime = 0.0f;
     public float SpawnOffset = 1.0f;
 
     // Use this for initialization
     void Start () {
-        GetComponentInParent<DamageComponent>().TakeDamage();
+
     }
 	
 	// Update is called once per frame
@@ -23,7 +24,7 @@ public class PlanetFragment : MonoBehaviour {
     {
         GameObject layer1 = transform.Find("graphics/Layer1Fragment").gameObject;
         layer1.GetComponent<Renderer>().enabled = false;
-        GenerateResources();
+        GenerateResources(true);
 
         Timer.Instance.Request(RepawnTime, () => Respawn());
     }
@@ -32,7 +33,7 @@ public class PlanetFragment : MonoBehaviour {
     {
         GetComponentInParent<DamageComponent>().Revive();
     }
-
+    
     public bool IsDestroyed()
     {
         return GetComponentInParent<DamageComponent>().GetIsDead();
@@ -48,14 +49,15 @@ public class PlanetFragment : MonoBehaviour {
                 GameObject volcano = (GameObject)Instantiate(ResourceManager.GetPrefab("Volcano"), transform.position, transform.rotation);
                 volcano.transform.parent = GameObject.Find("Volcanos").transform;
             }
-            GenerateResources();
+            GenerateResources(false);
         }
     }
 
-    private void GenerateResources()
+    private void GenerateResources(bool bigLoot)
     {
         uint grosCashValue = ResourceManager.GetPrefab("GrosCashSale").GetComponent<GrosCashSale>().GetValue();
         uint petiteMonnaieValue = ResourceManager.GetPrefab("PetiteMonnaie").GetComponent<PetitCashSale>().GetValue();
+        float grosCashDropRate = bigLoot ? GrosCashMegaLootDropRate : GrosCashNormalDropRate;
 
         uint cumulativePointValueSpawned = 0;
         while (cumulativePointValueSpawned < TotalPointValue)
@@ -64,7 +66,7 @@ public class PlanetFragment : MonoBehaviour {
             direction = Quaternion.AngleAxis(Random.Range(-45, 45), Vector3.forward) * direction;
             direction.Normalize();
 
-            if (cumulativePointValueSpawned + grosCashValue <= TotalPointValue && Random.Range(0.0f, 1.0f) < GrosCashDropRate)
+            if (cumulativePointValueSpawned + grosCashValue <= TotalPointValue && Random.Range(0.0f, 1.0f) < grosCashDropRate)
             {
                 GameObject grosCashSale = (GameObject)Instantiate(ResourceManager.GetPrefab("GrosCashSale"), transform.position, transform.rotation);
                 grosCashSale.transform.parent = GameObject.Find("Cash").transform;
