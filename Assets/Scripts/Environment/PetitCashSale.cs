@@ -1,9 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class PetitCashSale : MonoBehaviour {
-
-    public int Value;
+public class PetitCashSale : CashSale {
 
 	// Use this for initialization
 	void Start () {
