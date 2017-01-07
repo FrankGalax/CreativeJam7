@@ -91,17 +91,19 @@ public class LeDouxDouxPlayerController : MonoBehaviour
         if (Vector3.Angle(rightCancelRoll, velocityNormalizedOnPlane) < 90.0f)
             velocityForwardAngle *= -1.0f;
 
-        transform.rotation = Quaternion.LookRotation(transform.forward, Quaternion.AngleAxis(-velocityForwardAngle * RollAngleModifier * m_Velocity.magnitude, transform.forward) * m_Normal);
+        transform.rotation = Quaternion.LookRotation(transform.forward, Quaternion.AngleAxis(-velocityForwardAngle * RollAngleModifier * m_Velocity.magnitude * 1.25f, transform.forward) * m_Normal);
 
         Vector3 predictiveVelocity = Quaternion.AngleAxis(velocityForwardAngle * LookAheadAngleModifier, transform.up) * transform.forward * m_Velocity.magnitude;
         Vector3 target = PredictiveRoundUp(transform.position, predictiveVelocity);
 
         Vector3 targetNormal = (target - m_Planet.transform.position).normalized;
-        Vector3 targetForward = Vector3.Cross(rightCancelRoll, targetNormal);
+        Vector3 targetForward = predictiveVelocity.magnitude < 0.1f ?
+            Vector3.Cross(rightCancelRoll, targetNormal) :
+            Vector3.ProjectOnPlane(predictiveVelocity, transform.up).normalized;
 
         m_NextCameraPosition = target + (targetNormal * Mathf.Sin(cameraShipAngleRad) - targetForward * Mathf.Cos(cameraShipAngleRad)) * CameraShipDistance;
         camera.transform.position = Vector3.Lerp(camera.transform.position, m_NextCameraPosition, 12.0f * Time.deltaTime);
-        camera.transform.rotation = Quaternion.LookRotation((target - camera.transform.position).normalized, m_Normal);
+        camera.transform.rotation = Quaternion.LookRotation((target - camera.transform.position).normalized, Quaternion.AngleAxis(-velocityForwardAngle * RollAngleModifier * m_Velocity.magnitude * 0.5f, transform.forward) * m_Normal);
     }
 
     private Vector3 RoundUp(Vector3 previous, Vector3 velocity)
