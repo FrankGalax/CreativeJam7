@@ -31,8 +31,12 @@ public class FatAssShip : MonoBehaviour
 
     void OnCollisionEnter(Collision collision)
     {
-        //check if points fragmemnt
-
+        CashSale cashSale = collision.collider.gameObject.GetComponent<CashSale>();
+        if (cashSale != null)
+        {
+            m_duGrosCashSale += cashSale.GetValue();
+            Destroy(collision.collider.gameObject);
+        }
     }
 
     void SpendDaMoneyz(EDouxDouxUpgrades canIHazPls)
