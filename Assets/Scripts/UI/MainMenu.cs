@@ -34,6 +34,7 @@ public class MainMenu : PunBehaviour
     {
         Debug.Log("Photon : Joined lobby");
         INetwork.Instance.SetPlayerName(m_Username);
+        INetwork.Instance.SetShipId(Transform.FindObjectOfType<Toggle>().isOn ? 1 : 0);
         INetwork.Instance.JoinRandomRoom();
     }
 

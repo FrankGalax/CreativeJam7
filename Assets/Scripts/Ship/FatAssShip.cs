@@ -7,26 +7,43 @@ public enum EDouxDouxUpgrades
     EDouxDouxUpgrades_DEFENCE
 }
 
+struct SPowerUP
+{
+    public uint price;
+    public float coolDown;
+
+}
 public class FatAssShip : MonoBehaviour
 {
-    uint m_duGrosCashSale = 0;
+    uint m_duGrosCashSale = 10;
 
     [SerializeField]
-    uint offencePowerUpPrice = 1;
-
+    SPowerUP offensePowerUp;
     [SerializeField]
-    uint defencePowerUpPrice = 1;
+    SPowerUP defensePowerUp;
+
+    float m_offenseCD;
+    float m_defenseCD;
+
 
     // Use this for initialization
     void Start()
     {
-
+        m_offenseCD = 0.0f;
+        m_defenseCD = 0.0f;
     }
 
     // Update is called once per frame
     void Update()
     {
-
+        if (m_offenseCD > 0.0f)
+        {
+            m_offenseCD -= Time.deltaTime;
+        }
+        else if (m_defenseCD > 0.0f)
+        {
+            m_defenseCD -= Time.deltaTime;
+        }
     }
 
     void OnCollisionEnter(Collision collision)
@@ -39,7 +56,7 @@ public class FatAssShip : MonoBehaviour
         }
     }
 
-    void SpendDaMoneyz(EDouxDouxUpgrades canIHazPls)
+    public void SpendDaMoneyz(EDouxDouxUpgrades canIHazPls)
     {
         if (CanIHazPls(canIHazPls))
         {
@@ -51,25 +68,27 @@ public class FatAssShip : MonoBehaviour
                     {
                         ship.AndMyAxe();
                     }
+                    m_offenseCD = offensePowerUp.coolDown;
                     break;
                 case EDouxDouxUpgrades.EDouxDouxUpgrades_DEFENCE:
                     foreach (VaisseauQuiJoueAfuckinMinecraft ship in ships)
                     {
                         ship.ImRubberYoureGlue();
                     }
+                    m_defenseCD = defensePowerUp.coolDown;
                     break;
             }
         }
     }
 
-    bool CanIHazPls(EDouxDouxUpgrades iReallyReallyNeedThis)
+    public bool CanIHazPls(EDouxDouxUpgrades iReallyReallyNeedThis)
     {
         switch (iReallyReallyNeedThis)
         {
             case EDouxDouxUpgrades.EDouxDouxUpgrades_OFFENCE:
-                return m_duGrosCashSale >= offencePowerUpPrice;
+                return m_duGrosCashSale >= offensePowerUp.price && m_offenseCD >= 0.0f;
             case EDouxDouxUpgrades.EDouxDouxUpgrades_DEFENCE:
-                return m_duGrosCashSale >= defencePowerUpPrice;
+                return m_duGrosCashSale >= defensePowerUp.price && m_defenseCD >= 0.0f;
         }
         return false;
     }

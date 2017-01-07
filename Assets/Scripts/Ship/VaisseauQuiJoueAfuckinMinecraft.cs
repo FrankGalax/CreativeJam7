@@ -56,16 +56,21 @@ public class VaisseauQuiJoueAfuckinMinecraft : MonoBehaviour
         PlanetFragment[] fragments = GameObject.FindObjectsOfType<PlanetFragment>();
         float bestDot = float.MaxValue;
         PlanetFragment bestFrag = null;
-        float maxDistSqrt = m_fuckShitUpRange * m_fuckShitUpRange;
+
+        Planet planet = GameObject.FindObjectOfType<Planet>();
+
+        if (planet == null)
+            return bestFrag;
 
         foreach (PlanetFragment fragment in fragments)
         {
-            Vector3 planeToFrag = fragment.transform.position - transform.position;
-            float distSqrt = Vector3.SqrMagnitude(planeToFrag);
+            float distanceFuckingRadial = Vector3.Angle(transform.position - planet.transform.position, fragment.transform.position - planet.transform.position) * Mathf.Deg2Rad * planet.Radius;
 
-            if (distSqrt <= maxDistSqrt)
+            if (distanceFuckingRadial <= m_fuckShitUpRange && fragment.GetComponentInChildren<Renderer>().isVisible)
             {
-                float dot = Vector3.Dot(transform.forward, planeToFrag);
+                Camera cam = Camera.main;
+                float dot = Vector3.Dot(cam.transform.forward, fragment.transform.position - cam.transform.forward);
+                
                 if (dot < bestDot)
                 {
                     bestDot = dot;
