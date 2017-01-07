@@ -59,7 +59,13 @@ public class LeDouxDouxPlayerController : MonoBehaviour
         if (vertical <= 0.0f)
         {
             Vector3 velocityDirection = m_Velocity.normalized;
-            m_Velocity -= Decceleration * velocityDirection * Time.deltaTime;
+            float length = m_Velocity.magnitude;
+            length -= Decceleration * Time.deltaTime;
+            if (length < 0.0f)
+            {
+                length = 0.0f;
+            }
+            m_Velocity = velocityDirection * length;
         }
 
         transform.Rotate(Vector3.up, horizontal * TurnRate * Time.deltaTime);
@@ -86,10 +92,12 @@ public class LeDouxDouxPlayerController : MonoBehaviour
 
         float cameraShipAngleRad = Mathf.Deg2Rad * CameraShipAngle;
 
-        Vector3 velocityNormalizedOnPlane = Vector3.ProjectOnPlane(m_Velocity, transform.up).normalized;
+        Vector3 velocityOnPlane = Vector3.ProjectOnPlane(m_Velocity, transform.up);
 
-        float velocityForwardAngle = m_Velocity.magnitude < 0.1f ? 0.0f : Vector3.Angle(transform.forward, velocityNormalizedOnPlane);
-        Vector3 rightCancelRoll = Vector3.ProjectOnPlane(transform.right, transform.up).normalized;
+        Vector3 velocityNormalizedOnPlane = velocityOnPlane.magnitude > 0.1 ? Vector3.ProjectOnPlane(m_Velocity, m_Normal).normalized : transform.forward;
+
+        float velocityForwardAngle = m_Velocity.magnitude < 0.001f ? 0.0f : Vector3.Angle(transform.forward, velocityNormalizedOnPlane);
+        Vector3 rightCancelRoll = Vector3.ProjectOnPlane(transform.right, m_Normal).normalized;
         if (Vector3.Angle(rightCancelRoll, velocityNormalizedOnPlane) < 90.0f)
             velocityForwardAngle *= -1.0f;
 
@@ -99,13 +107,15 @@ public class LeDouxDouxPlayerController : MonoBehaviour
         Vector3 target = PredictiveRoundUp(transform.position, predictiveVelocity);
 
         Vector3 targetNormal = (target - m_Planet.transform.position).normalized;
-        Vector3 targetForward = predictiveVelocity.magnitude < 0.1f ?
+        Vector3 targetForward = predictiveVelocity.magnitude < 0.001f ?
             Vector3.Cross(rightCancelRoll, targetNormal) :
             Vector3.ProjectOnPlane(predictiveVelocity, transform.up).normalized;
 
-        m_NextCameraPosition = target + (targetNormal * Mathf.Sin(cameraShipAngleRad) - targetForward * Mathf.Cos(cameraShipAngleRad)) * CameraShipDistance;
-        camera.transform.position = Vector3.Lerp(camera.transform.position, m_NextCameraPosition, 12.0f * Time.deltaTime);
-        camera.transform.rotation = Quaternion.LookRotation((target - camera.transform.position).normalized, Quaternion.AngleAxis(-velocityForwardAngle * RollAngleModifier * m_Velocity.magnitude * 0.5f, transform.forward) * m_Normal);
+        m_NextCameraPosition = target + (targetNormal * Mathf.Sin(cameraShipAngleRad) - targetForward * Mathf.Cos(cameraShipAngleRad)) * CameraShipDistance; 
+
+        camera.transform.position = Vector3.Lerp(camera.transform.position, m_NextCameraPosition, 6.0f * Time.deltaTime);
+        Vector3 normal = (camera.transform.position - m_Planet.transform.position).normalized;
+        camera.transform.rotation = Quaternion.LookRotation((target - camera.transform.position).normalized, /*Quaternion.AngleAxis(-velocityForwardAngle * RollAngleModifier * m_Velocity.magnitude * 0.5f, transform.forward) **/ normal);
     }
 
     private void UpdateShoot()
@@ -126,7 +136,7 @@ public class LeDouxDouxPlayerController : MonoBehaviour
         Vector3 direction = velocity.normalized;
         float radius = m_Planet.Radius + FlightHeight;
         float angularSpeed = speed / radius;
-        float deltaAngle = angularSpeed * Time.deltaTime;
+        float deltaAngle = angularSpeed * Time.fixedDeltaTime;
         Vector3 displacement = radius * Mathf.Tan(deltaAngle) * direction;
         Vector3 next = previous + displacement;
         return m_Planet.transform.position + (next - m_Planet.transform.position).normalized * radius;
@@ -138,7 +148,9 @@ public class LeDouxDouxPlayerController : MonoBehaviour
         Vector3 direction = velocity.normalized;
         float radius = m_Planet.Radius + FlightHeight;
         float angularSpeed = speed / radius;
-        float deltaAngle = angularSpeed * LookAhead * Time.deltaTime;
+        float deltaAngle = angularSpeed * LookAhead * Time.fixedDeltaTime;
+        if (deltaAngle > 0.3f)
+            deltaAngle = 0.3f;
         Vector3 displacement = radius * Mathf.Tan(deltaAngle) * direction;
         Vector3 next = previous + displacement;
         return m_Planet.transform.position + (next - m_Planet.transform.position).normalized * radius;
