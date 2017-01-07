@@ -4,9 +4,11 @@ using System.Collections;
 public class DamageComponent : MonoBehaviour {
 
     public uint InitialHealth = 3;
+    public float DamageCooldown = 0.0f;
 
     bool m_IsDead = false;
     uint m_CurrentHealth;
+    bool m_OnCooldown = false;
 
     public uint GetCurrentHealth() { return m_CurrentHealth; }
     public bool GetIsDead() { return m_IsDead; }
@@ -23,11 +25,14 @@ public class DamageComponent : MonoBehaviour {
 
     public void TakeDamage()
     {
-        if (m_IsDead)
+        if (m_IsDead || m_OnCooldown)
             return;
 
         --m_CurrentHealth;
         SendMessage("OnDamageTaken");
+
+        m_OnCooldown = true;
+        Timer.Instance.Request(DamageCooldown, () => { m_OnCooldown = false; });
 
         if (m_CurrentHealth == 0)
         {

@@ -40,7 +40,8 @@ public class PlanetFragment : MonoBehaviour {
         else if (Random.Range(0.0f, 1.0f) < VolcanoSpawnRate)
         {
             // TODO : don't instanciate if on top of an other one
-            Instantiate(ResourceManager.GetPrefab("Volcano"), transform.position, transform.rotation);
+            GameObject volcano = (GameObject)Instantiate(ResourceManager.GetPrefab("Volcano"), transform.position, transform.rotation);
+            volcano.transform.parent = GameObject.Find("Volcanos").transform;
         }
 
         GenerateResources();
@@ -62,12 +63,14 @@ public class PlanetFragment : MonoBehaviour {
             if (cumulativePointValueSpawned + grosCashValue <= TotalPointValue && Random.Range(0.0f, 1.0f) < GrosCashDropRate)
             {
                 GameObject grosCashSale = (GameObject)Instantiate(ResourceManager.GetPrefab("GrosCashSale"), transform.position, transform.rotation);
+                grosCashSale.transform.parent = GameObject.Find("Cash").transform;
                 grosCashSale.GetComponent<Rigidbody>().velocity = direction;
                 cumulativePointValueSpawned += grosCashValue;
             }
             else
             {
                 GameObject petiteMonnaie = (GameObject)Instantiate(ResourceManager.GetPrefab("PetiteMonnaie"), transform.position, transform.rotation);
+                petiteMonnaie.transform.parent = GameObject.Find("Cash").transform;
                 petiteMonnaie.GetComponent<Rigidbody>().velocity = direction;
                 cumulativePointValueSpawned += petiteMonnaieValue;
             }
