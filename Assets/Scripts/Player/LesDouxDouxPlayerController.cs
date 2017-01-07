@@ -1,8 +1,8 @@
 ﻿using UnityEngine;
 
-public class LeDouxPlayerController : MonoBehaviour
+public class LeDouxDouxPlayerController : MonoBehaviour
 {
-    public float CameraUpDistance = 5.0f;
+    public float CameraShipDistance = 5.0f;
     public float PlanetRadius = 5.0f;
     public float FlightHeight = 1.0f;
     public float Acceleration = 1.0f;
