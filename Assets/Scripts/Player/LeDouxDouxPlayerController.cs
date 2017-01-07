@@ -2,8 +2,6 @@
 
 public class LeDouxDouxPlayerController : MonoBehaviour
 {
-    public GameObject DebugSpherePrefab;
-
     public float CameraShipDistance = 5.0f;
     public float CameraShipAngle = 30.0f;
     public float LookAhead = 10.0f;

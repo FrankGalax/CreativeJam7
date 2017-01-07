@@ -22,6 +22,12 @@ public class PlanetFragment : MonoBehaviour {
         GenerateResources();
     }
 
+    public bool IsDestroyed()
+    {
+        // CODE CA MING
+        return false;
+    }
+
     private void Destroy()
     {
         GameObject layer1 =  transform.Find("Layer1Graphics/Layer1Fragment").gameObject;
