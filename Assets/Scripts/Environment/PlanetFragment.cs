@@ -13,9 +13,8 @@ public class PlanetFragment : MonoBehaviour {
 	
 	}
 
-    void TakeDamage()
+    public void TakeDamage()
     {
-
+        
     }
-
 }
