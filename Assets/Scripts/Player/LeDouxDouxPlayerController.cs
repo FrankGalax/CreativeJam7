@@ -20,6 +20,7 @@ public class LeDouxDouxPlayerController : MonoBehaviour
     private Vector3 m_Velocity;
     private bool m_ChangedDirection;
     private Vector3 m_NextCameraPosition;
+    private bool m_isShooting;
 
     void Awake()
     {
@@ -42,6 +43,7 @@ public class LeDouxDouxPlayerController : MonoBehaviour
 
         UpdateMovement();
         UpdateCamera();
+        UpdateShoot();
     }
 
     private void UpdateMovement()
@@ -102,6 +104,18 @@ public class LeDouxDouxPlayerController : MonoBehaviour
         m_NextCameraPosition = target + (targetNormal * Mathf.Sin(cameraShipAngleRad) - targetForward * Mathf.Cos(cameraShipAngleRad)) * CameraShipDistance;
         camera.transform.position = Vector3.Lerp(camera.transform.position, m_NextCameraPosition, 12.0f * Time.deltaTime);
         camera.transform.rotation = Quaternion.LookRotation((target - camera.transform.position).normalized, m_Normal);
+    }
+
+    private void UpdateShoot()
+    {
+        bool shoot = Input.GetButtonDown("Fire1");
+
+        if (shoot && !m_isShooting)
+        {
+            GetComponent<VaisseauQuiJoueAfuckinMinecraft>().PewPew();
+        }
+
+        m_isShooting = shoot;
     }
 
     private Vector3 RoundUp(Vector3 previous, Vector3 velocity)
