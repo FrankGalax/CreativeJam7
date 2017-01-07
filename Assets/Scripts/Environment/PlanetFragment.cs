@@ -8,7 +8,7 @@ public class PlanetFragment : MonoBehaviour {
 
     // Use this for initialization
     void Start () {
-        TakeDamage();
+
     }
 	
 	// Update is called once per frame
@@ -42,10 +42,10 @@ public class PlanetFragment : MonoBehaviour {
 
     private void GenerateResources()
     {
-        int grosCashValue = ResourceManager.GetPrefab("GrosCashSale").GetComponent<GrosCashSale>().Value;
-        int petiteMonnaieValue = ResourceManager.GetPrefab("PetiteMonnaie").GetComponent<PetitCashSale>().Value;
+        uint grosCashValue = ResourceManager.GetPrefab("GrosCashSale").GetComponent<GrosCashSale>().GetValue();
+        uint petiteMonnaieValue = ResourceManager.GetPrefab("PetiteMonnaie").GetComponent<PetitCashSale>().GetValue();
 
-        int cumulativePointValueSpawned = 0;
+        uint cumulativePointValueSpawned = 0;
         while (cumulativePointValueSpawned < TotalPointValue)
         {
             Vector3 direction = Quaternion.AngleAxis(Random.Range(-45, 45), Vector3.right) * transform.up;
