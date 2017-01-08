@@ -10,11 +10,17 @@ public class VaisseauQuiJoueAfuckinMinecraft : MonoBehaviour
     [SerializeField]
     float fuckShitUpBonusDuration = 5.0f;
     [SerializeField]
+    float leaveMeTheFuckAloneBonusDuration = 5.0f;
+    [SerializeField]
     float fuckShitUpMinRange = 20f;
+    [SerializeField]
+    GameObject daShields;
+
     [SerializeField]
     uint fuckShitUpNbMissile = 4;
 
     float m_fuckShitUpBonusRemainingDuration = 0.0f;
+    float m_leaveMeTheFuckAloneBonusRemainingDuration = 0.0f;
     float m_fuckShitUpRange;
 
     PlanetFragment m_bestTarget;
@@ -30,10 +36,13 @@ public class VaisseauQuiJoueAfuckinMinecraft : MonoBehaviour
         m_bestTarget = null;
         m_CooldownFX = transform.Find("CooldownFX").gameObject;
         m_CooldownFX.SetActive(false);
+        daShields.GetComponent<Renderer>().enabled = false;
 	}
 
     public void OnDamageTaken()
     {
+        if (m_leaveMeTheFuckAloneBonusRemainingDuration > .0f) return;
+        
         StunComponent sc = GetComponent<StunComponent>();
         if (sc != null)
         {
@@ -47,12 +56,25 @@ public class VaisseauQuiJoueAfuckinMinecraft : MonoBehaviour
         if (m_fuckShitUpBonusRemainingDuration > .0f)
         {
             m_fuckShitUpBonusRemainingDuration -= Time.deltaTime;
-            if (m_fuckShitUpBonusRemainingDuration >= .0f)
+            if (m_fuckShitUpBonusRemainingDuration <= .0f)
             {
                 m_fuckShitUpRange = fuckShitUpBaseRange;
             }
         }
-        
+
+        if (m_leaveMeTheFuckAloneBonusRemainingDuration > .0f)
+        {
+            m_leaveMeTheFuckAloneBonusRemainingDuration -= Time.deltaTime;
+
+            Color shieldColor = daShields.GetComponent<Renderer>().material.color;
+            shieldColor.a = Mathf.Min(0.5f, m_leaveMeTheFuckAloneBonusRemainingDuration / leaveMeTheFuckAloneBonusDuration);
+            daShields.GetComponent<Renderer>().material.color = shieldColor;
+            if (m_leaveMeTheFuckAloneBonusRemainingDuration <= .0f)
+            {
+                daShields.GetComponent<Renderer>().enabled = false;
+            }
+        }
+
         if (m_isShooting)
         {
             m_ShootingTimer -= Time.deltaTime;
@@ -75,7 +97,8 @@ public class VaisseauQuiJoueAfuckinMinecraft : MonoBehaviour
 
     public void ImRubberYoureGlue()
     {
-
+        m_leaveMeTheFuckAloneBonusRemainingDuration = leaveMeTheFuckAloneBonusDuration;
+        daShields.GetComponent<Renderer>().enabled = true;
     }
 
     public void PewPew()
@@ -88,6 +111,8 @@ public class VaisseauQuiJoueAfuckinMinecraft : MonoBehaviour
         {
             INetwork.Instance.RPC(gameObject, "LaunchMissile", PhotonTargets.All, INetwork.Instance.GetViewId(target.gameObject));
         }
+
+        ImRubberYoureGlue();
     }
 
     [PunRPC]
@@ -97,11 +122,18 @@ public class VaisseauQuiJoueAfuckinMinecraft : MonoBehaviour
         if (targetObj == null)
             return;
 
+        EarthSeekingMissile[] missiles = new EarthSeekingMissile[fuckShitUpNbMissile];
         for (uint missileIndex = 0; missileIndex < fuckShitUpNbMissile; missileIndex++)
         {
             Vector3 launchDirection = Quaternion.AngleAxis(Random.Range(-25, 25), transform.up) * ((missileIndex % 2 == 0 ? 1 : -1) * transform.right);
             GameObject missileGO = (GameObject)Instantiate(ResourceManager.GetPrefab("Missile"), transform.position, Quaternion.identity);
+            missiles[missileIndex] = missileGO.GetComponent<EarthSeekingMissile>();
             missileGO.GetComponent<EarthSeekingMissile>().Launch(targetObj.GetComponent<PlanetFragment>(), launchDirection, transform.up, GetComponent<LeDouxDouxPlayerController>().m_Velocity);
+        }
+
+        foreach (EarthSeekingMissile missile in missiles)
+        {
+            missile.otherMissiles = missiles;
         }
 
         m_isShooting = true;
