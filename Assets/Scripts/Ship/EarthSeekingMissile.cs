@@ -69,8 +69,6 @@ public class EarthSeekingMissile : MonoBehaviour {
 
         if (sqrDist < 1f)
         {
-            Debug.Log("Drette Icitte");
-
             if (INetwork.Instance.IsMaster())
             {
                 INetwork.Instance.RPC(m_target.gameObject, "TakeDamage", PhotonTargets.MasterClient);

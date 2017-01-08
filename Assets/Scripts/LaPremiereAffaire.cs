@@ -17,6 +17,8 @@ public class LaPremiereAffaire : MonoBehaviour
         Transform playerSpawnPointsContainer = GameObject.Find("PlayerSpawnPoints").transform;
         playerSpawnPoints.Add(playerSpawnPointsContainer.Find("MothershipSpawnPoint"));
         playerSpawnPoints.Add(playerSpawnPointsContainer.Find("FirstPlayerSpawnPoint"));
+        playerSpawnPoints.Add(playerSpawnPointsContainer.Find("SecondPlayerSpawnPoint"));
+        playerSpawnPoints.Add(playerSpawnPointsContainer.Find("ThirdPlayerSpawnPoint"));
 
         int id = network.GetId();
         bool isMothership = id == 0;
