@@ -43,11 +43,9 @@ public class Volcano : MonoBehaviour {
 
     public void StartEruption()
     {
-        if (INetwork.Instance.IsMaster())
-        {
-            Timer.Instance.Request(Lifetime, () => { INetwork.Instance.NetworkDestroy(gameObject); });
-            INetwork.Instance.RPC(gameObject, "Erupt", PhotonTargets.All);
-        }
+        Timer.Instance.Request(Lifetime * 0.8f, () => { INetwork.Instance.RPC(gameObject, "StopLight", PhotonTargets.All); });
+        Timer.Instance.Request(Lifetime, () => { INetwork.Instance.NetworkDestroy(gameObject); });
+        INetwork.Instance.RPC(gameObject, "Erupt", PhotonTargets.All);
     }
 
     [PunRPC]
@@ -57,5 +55,11 @@ public class Volcano : MonoBehaviour {
         emission.enabled = true;
 
         m_erupted = true;
+    }
+
+    [PunRPC]
+    public void StopLight()
+    {
+        GetComponentInChildren<Light>().enabled = false;
     }
 }
