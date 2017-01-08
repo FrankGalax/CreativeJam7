@@ -7,17 +7,21 @@ public class Volcano : MonoBehaviour {
     public float Length = 0.0f;
     public float EruptionSpeed = 1.0f;
 
-    bool m_IsComingOut = false;
+    bool m_IsComingOut = true;
     float m_Displacement = 0.0f;
 
 	// Use this for initialization
-	void Start () {
-        Timer.Instance.Request(Lifetime, () => { Destroy(this); });
-        m_IsComingOut = true;
+	void Start ()
+    {
+        if (INetwork.Instance.IsMaster())
+        {
+            Timer.Instance.Request(Lifetime, () => { INetwork.Instance.NetworkDestroy(gameObject); });
+        }
     }
 	
 	// Update is called once per frame
-	void Update () {
+	void Update ()
+    {
         if (m_IsComingOut)
         {
             Vector3 direction = transform.up;
@@ -37,7 +41,7 @@ public class Volcano : MonoBehaviour {
         DamageComponent damageComponent = other.GetComponentInParent<DamageComponent>();
         if (damageComponent)
         {
-            damageComponent.TakeDamage();
+            INetwork.Instance.RPC(other.gameObject, "TakeDamage", PhotonTargets.MasterClient);
         }
     }
 }
