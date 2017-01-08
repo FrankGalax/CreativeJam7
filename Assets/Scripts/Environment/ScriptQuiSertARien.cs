@@ -12,9 +12,4 @@ public class ScriptQuiSertARien : MonoBehaviour {
 	void Update () {
 	
 	}
-
-    void OnTriggerEnter(Collider other)
-    {
-        GetComponentInParent<Volcano>().OnTriggerEnter(other);
-    }
 }

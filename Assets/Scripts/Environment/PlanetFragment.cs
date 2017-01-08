@@ -44,7 +44,7 @@ public class PlanetFragment : MonoBehaviour {
                 Vector3 direction = GetComponent<Renderer>().bounds.center - transform.position;
                 direction.Normalize();
                 m_Volcano = INetwork.Instance.Instantiate(ResourceManager.GetPrefab("Volcano"), GetComponent<Renderer>().bounds.center, Quaternion.LookRotation(direction));
-                INetwork.Instance.RPC(gameObject, "SetVolcanoParent", PhotonTargets.All, new object[] { INetwork.Instance.GetViewId(m_Volcano), direction });
+                INetwork.Instance.RPC(gameObject, "SetVolcanoParent", PhotonTargets.All, INetwork.Instance.GetViewId(m_Volcano));
             }
 
             GenerateResources(true);
@@ -54,12 +54,10 @@ public class PlanetFragment : MonoBehaviour {
     }
 
     [PunRPC]
-    private void SetVolcanoParent(int volcanoId, Vector3 direction)
+    private void SetVolcanoParent(int volcanoId)
     {
         GameObject volcano = INetwork.Instance.GetGameObjectWithView(volcanoId);
         volcano.transform.parent = GameObject.Find("Volcanos").transform;
-        volcano.GetComponent<Volcano>().Direction = direction;
-
     }
 
     [PunRPC]
