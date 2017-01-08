@@ -66,5 +66,7 @@ public class Lobby : MonoBehaviour
 
         INetwork.Instance.SetRoomStarted();
         INetwork.Instance.LoadLevel(GameSceneName);
+
+        Destroy(MenuMusic.Instance.gameObject);
     }
 }
