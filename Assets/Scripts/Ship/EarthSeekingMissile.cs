@@ -19,26 +19,35 @@ public class EarthSeekingMissile : MonoBehaviour {
     Vector3 m_velocity;
     float m_jerkTimer;
     PlanetFragment m_target;
-
+    float m_remainingLifetime;
     bool m_isHardLocked;
 
 	// Use this for initialization
 	void Start () {
         m_isHardLocked = false;
-	}
-	
-	// Update is called once per frame
-	void Update () {
-        if (m_target == null)
+        m_remainingLifetime = 6.0f;
+    }
+    
+    // Update is called once per frame
+    void Update () {
+
+        m_remainingLifetime -= Time.deltaTime;
+        if (m_remainingLifetime < 0.0f)
         {
-            Destroy(gameObject);
+            Destroy();
+            return;
+        }
+
+        if (m_target == null || m_target.IsDestroyed())
+        {
+            Destroy();
             return;
         }
 
         Vector3 planetPos = GameObject.FindObjectOfType<Planet>().transform.position;
         float missileRadius = (transform.position - planetPos).magnitude;
 
-        Vector3 targetPos = (m_target.gameObject.transform.position - planetPos).normalized * missileRadius;
+        Vector3 targetPos = (m_target.GetComponent<Renderer>().bounds.center - planetPos).normalized * missileRadius;
         Vector3 distance = targetPos - transform.position;
 
         Vector3 distUnwrapperSurUnPlane = Vector3.ProjectOnPlane(distance, transform.up);
@@ -55,38 +64,35 @@ public class EarthSeekingMissile : MonoBehaviour {
         {
             m_velocity += m_acceleration * distUnwrapperSurUnPlane.normalized * Time.deltaTime;
         }
-        if (m_target.IsDestroyed())
-        {
-            Destroy();
-            return;
-        }
 
         float sqrDist = distUnwrapperSurUnPlane.sqrMagnitude;
- 
+        Debug.Log("distance sqr: " + sqrDist);
+
+        if (sqrDist < 1f)
+        {
+            Debug.Log("Drette Icitte");
+
+            if (INetwork.Instance.IsMaster())
+            {
+                INetwork.Instance.RPC(m_target.gameObject, "TakeDamage", PhotonTargets.MasterClient);
+            }
+            Destroy();
+        }
 
         if (m_isHardLocked)
         {
-            m_velocity = m_velocity.magnitude * (m_target.transform.position - transform.position).normalized;
+            m_velocity = m_velocity.magnitude * (m_target.GetComponent<Renderer>().bounds.center - transform.position).normalized;
+            transform.position += m_velocity * Time.deltaTime;
+            return;
         }
         else if (!m_isHardLocked && sqrDist < superLockInDist * superLockInDist)
         {
             INetwork.Instance.RPC(gameObject, "HardLock", PhotonTargets.All);
         }
 
-        if ( sqrDist < 0.1f)
-        {
-            INetwork.Instance.RPC(m_target.gameObject, "TakeDamage", PhotonTargets.MasterClient);
-            Destroy();
-        }
-
-        Vector3 displacement = m_velocity * Time.deltaTime;
-
-        float deltaAngle = displacement.magnitude / missileRadius;
-        Vector3 sphereDisplacement = missileRadius * Mathf.Tan(deltaAngle) * m_velocity.normalized;
-
-        Vector3 newPos = planetPos + (transform.position + sphereDisplacement - planetPos).normalized * missileRadius;
-
-        transform.position = newPos;
+        Vector3 nextPosition = transform.position + m_velocity * Time.deltaTime;
+        nextPosition = planetPos + (nextPosition - planetPos).normalized * missileRadius;
+        transform.position = nextPosition;
     }
 
     Vector3 RadialDisplacement(float radius, float angle, Vector3 velocity, Vector3 planetPos)

@@ -4,11 +4,13 @@ using System.Collections;
 public class VaisseauQuiJoueAfuckinMinecraft : MonoBehaviour
 {
     [SerializeField]
-    float fuckShitUpBaseRange = 0.1f;
+    float fuckShitUpBaseRange = 100f;
     [SerializeField]
-    float fuckShitUpBonusRange = 0.05f;
+    float fuckShitUpBonusRange = 50f;
     [SerializeField]
     float fuckShitUpBonusDuration = 5.0f;
+    [SerializeField]
+    float fuckShitUpMinRange = 20f;
     [SerializeField]
     uint fuckShitUpNbMissile = 4;
 
@@ -112,7 +114,7 @@ public class VaisseauQuiJoueAfuckinMinecraft : MonoBehaviour
         {
             float distanceFuckingRadial = Vector3.Angle(transform.position - planet.transform.position, fragment.GetComponent<Renderer>().bounds.center - planet.transform.position) * Mathf.Deg2Rad * planet.Radius;
 
-            if (distanceFuckingRadial <= m_fuckShitUpRange && fragment.GetComponentInChildren<Renderer>().isVisible)
+            if (distanceFuckingRadial <= m_fuckShitUpRange && !fragment.IsDestroyed() && fragment.GetComponentInChildren<Renderer>().isVisible)
             {
                 Vector3 distUnwrapperSurUnPlane = Vector3.ProjectOnPlane(fragment.GetComponent<Renderer>().bounds.center - transform.position, transform.up).normalized;
                 float dot = Vector3.Dot(transform.forward, distUnwrapperSurUnPlane) / distanceFuckingRadial;
