@@ -63,6 +63,7 @@ public class StunComponent : MonoBehaviour {
     [PunRPC]
     public void GetStunned()
     {
+        transform.Find("StunSound").GetComponent<AudioSource>().Play();
         m_timer = stunDuration;
         m_isStunned = true;
     }
