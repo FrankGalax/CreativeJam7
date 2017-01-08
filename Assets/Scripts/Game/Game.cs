@@ -27,6 +27,7 @@ public class Game : GameSingleton<Game>
     {
         m_GameEnded = false;
         GameTime = MaxGameTime;
+        ColorizePlanet();
     }
 
     void Update()
@@ -99,5 +100,13 @@ public class Game : GameSingleton<Game>
     {
         INetwork.Instance.Disconnect();
         SceneManager.LoadScene("mainMenu");
+    }
+
+    public void ColorizePlanet()
+    {
+        for (int i = 0; i < Zones.Count; ++i)
+        {
+
+        }
     }
 }
