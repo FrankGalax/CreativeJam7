@@ -101,7 +101,6 @@ public class LeDouxDouxPlayerController : MonoBehaviour
         Vector3 velocityNormalizedOnPlane = velocityOnPlane.magnitude > 0.1 ? Vector3.ProjectOnPlane(m_Velocity, m_Normal).normalized : transform.forward;
 
         float velocityForwardAngle = m_Velocity.magnitude < 0.001f ? 0.0f : Vector3.Angle(transform.forward, velocityNormalizedOnPlane);
-        Debug.Log(velocityForwardAngle);
         Vector3 rightCancelRoll = Vector3.ProjectOnPlane(transform.right, m_Normal).normalized;
         if (Vector3.Angle(rightCancelRoll, velocityNormalizedOnPlane) < 90.0f)
             velocityForwardAngle *= -1.0f;
