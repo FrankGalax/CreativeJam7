@@ -11,7 +11,6 @@ public class LeDouxPlayerController : MonoBehaviour
 
     private Planet m_Planet;
     private Vector3 m_Normal;
-    private Vector3 m_Tangent;
     private Vector3 m_Velocity;
     private bool m_ChangedDirection;
     private Vector3 m_NextCameraPosition;
@@ -33,7 +32,6 @@ public class LeDouxPlayerController : MonoBehaviour
     void Update()
     {
         m_Normal = (transform.position - m_Planet.transform.position).normalized;
-        m_Tangent = Vector3.ProjectOnPlane(Camera.main.transform.up, m_Normal).normalized;
 
         UpdateMovement();
         UpdateCamera();

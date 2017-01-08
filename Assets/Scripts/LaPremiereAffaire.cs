@@ -27,9 +27,17 @@ public class LaPremiereAffaire : MonoBehaviour
             isMothership = false;
             prefab = ResourceManager.GetPrefab("Standardship");
         }
-        INetwork.Instance.Instantiate(prefab, playerSpawnPoints[id].transform.position, playerSpawnPoints[id].transform.rotation);
-
-        GameObject gameUIPrefab = isMothership ? ResourceManager.GetPrefab("MothershipCanvas") : ResourceManager.GetPrefab("StandardshipCanvas");
-        Instantiate(gameUIPrefab);
+        GameObject ship = INetwork.Instance.Instantiate(prefab, playerSpawnPoints[id].transform.position, playerSpawnPoints[id].transform.rotation);
+        
+        if (isMothership)
+        {
+            ship.GetComponent<LeDouxPlayerController>().enabled = true;
+        }
+        else
+        {
+            ship.GetComponent<LeDouxDouxPlayerController>().enabled = true;
+        }
+        GameObject canvas = isMothership ? Game.Instance.MothershipCanvas : Game.Instance.StandardShipCanvas;
+        canvas.SetActive(true);
 	}
 }

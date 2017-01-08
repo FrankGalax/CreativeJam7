@@ -5,14 +5,9 @@ public class StandardShipUI : MonoBehaviour
 {
     Text m_TimerText;
 
-    void Awake()
-    {
-        m_TimerText = transform.Find("TimerPanel").Find("Timer").GetComponent<Text>();
-    }
-
     void Start()
     {
-        Game.Instance.GameUICanvas = gameObject;
+        m_TimerText = transform.Find("TimerPanel").Find("Timer").GetComponent<Text>();
     }
 
     void Update()

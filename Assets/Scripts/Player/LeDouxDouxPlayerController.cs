@@ -19,8 +19,6 @@ public class LeDouxDouxPlayerController : MonoBehaviour
     private bool m_ChangedDirection;
     private Vector3 m_NextCameraPosition;
     private bool m_isShooting;
-    private Vector3 m_LastTarget;
-    private bool m_LastTargetSet;
 
     void Awake()
     {
@@ -35,7 +33,6 @@ public class LeDouxDouxPlayerController : MonoBehaviour
         m_Normal = (transform.position - m_Planet.transform.position).normalized;
         Vector3 forward = Vector3.ProjectOnPlane(transform.forward, m_Normal).normalized;
         transform.rotation = Quaternion.LookRotation(forward, m_Normal);
-        m_LastTargetSet = false;
         m_isShooting = false;
     }
 
@@ -51,8 +48,6 @@ public class LeDouxDouxPlayerController : MonoBehaviour
     private void UpdateMovement()
     {
         // Les maths la
-
-        Camera camera = Camera.main;
 
         float vertical = Input.GetAxis("Propel");
         float horizontal = Input.GetAxis("Horizontal");
@@ -118,9 +113,6 @@ public class LeDouxDouxPlayerController : MonoBehaviour
         camera.transform.position = Vector3.Lerp(camera.transform.position, m_NextCameraPosition, 6.0f * Time.deltaTime);
         Vector3 normal = (camera.transform.position - m_Planet.transform.position).normalized;
         camera.transform.rotation = Quaternion.LookRotation((target - camera.transform.position).normalized, Quaternion.AngleAxis(-velocityForwardAngle * RollAngleModifier * m_Velocity.magnitude * 0.5f, transform.forward) * normal);
-
-        m_LastTarget = target;
-        m_LastTargetSet = true;
     }
 
     private void UpdateShoot()

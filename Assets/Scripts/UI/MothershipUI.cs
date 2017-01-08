@@ -10,7 +10,7 @@ public class MothershipUI : MonoBehaviour
     private GameObject m_AttackPanel;
     private GameObject m_DefensePanel;
 
-    void Awake()
+    void Start()
     {
         m_ResourcesText = transform.Find("ResourcesPanel").Find("Text").GetComponent<Text>();
         m_TimerText = transform.Find("TimerPanel").Find("Timer").GetComponent<Text>();
@@ -25,11 +25,6 @@ public class MothershipUI : MonoBehaviour
         m_DefensePanel = transform.Find("DefensePanel").gameObject;
         m_AttackPanel.SetActive(false);
         m_DefensePanel.SetActive(false);
-    }
-
-    void Start()
-    {
-        Game.Instance.GameUICanvas = gameObject;
     }
 
     void Update()
