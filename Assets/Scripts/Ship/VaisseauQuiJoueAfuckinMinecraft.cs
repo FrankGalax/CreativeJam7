@@ -25,6 +25,7 @@ public class VaisseauQuiJoueAfuckinMinecraft : MonoBehaviour
 
     PlanetFragment m_bestTarget;
     List<GameObject> m_CooldownFXs;
+    GameObject m_TrusterFX;
     private bool m_isShooting;
     private float m_ShootingTimer;
     public float ShootCooldown = 2.0f;
@@ -39,7 +40,9 @@ public class VaisseauQuiJoueAfuckinMinecraft : MonoBehaviour
         m_CooldownFXs.Add(transform.Find("CooldownFX1").gameObject);
         m_CooldownFXs.Add(transform.Find("CooldownFX2").gameObject);
         m_CooldownFXs.ForEach(p => p.SetActive(false));
-	}
+        m_TrusterFX = transform.Find("TrusterFX").gameObject;
+        m_TrusterFX.SetActive(false);
+    }
 
     public void OnDamageTaken()
     {
@@ -87,12 +90,18 @@ public class VaisseauQuiJoueAfuckinMinecraft : MonoBehaviour
         {
             p.SetActive(m_isShooting);
         });
+
+        if (!IsGoingFast() && m_TrusterFX.GetActive())
+        {
+            m_TrusterFX.SetActive(false);
+        }
     }
 
     [PunRPC]
     public void GottaGoFast()
     {
         m_gottaGoFastBonusRemainingDuration = gottaGoFastBonusDuration;
+        m_TrusterFX.SetActive(true);
     }
 
     public bool IsGoingFast()
