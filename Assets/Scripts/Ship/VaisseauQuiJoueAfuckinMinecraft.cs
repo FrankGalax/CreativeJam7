@@ -56,8 +56,8 @@ public class VaisseauQuiJoueAfuckinMinecraft : MonoBehaviour
             for (uint missileIndex = 0; missileIndex < fuckShitUpNbMissile; missileIndex++)
             {
                 Vector3 launchDirection = Quaternion.AngleAxis(Random.Range(-25, 25), transform.up) * ((missileIndex % 2 == 0 ? 1 : -1) * transform.right);
-                GameObject missileGO = Instantiate(ResourceManager.GetPrefab("Missile"), transform.position, Quaternion.identity) as GameObject;
-                missileGO.GetComponent<EarthSeekingMissile>().Launch(target, launchDirection, transform.up, GetComponent<LeDouxDouxPlayerController>().m_Velocity);
+                GameObject missileGO = INetwork.Instance.Instantiate(ResourceManager.GetPrefab("Missile"), transform.position, Quaternion.identity);
+                INetwork.Instance.RPC(missileGO, "Launch", PhotonTargets.MasterClient, target, launchDirection, transform.up, GetComponent<LeDouxDouxPlayerController>().m_Velocity);
             }
         }
     }

@@ -65,7 +65,7 @@ public class EarthSeekingMissile : MonoBehaviour {
         }
         else if (!m_isHardLocked && sqrDist < superLockInDist * superLockInDist)
         {
-            m_isHardLocked = true;
+            INetwork.Instance.RPC(gameObject, "HardLock", PhotonTargets.All);
         }
 
         if ( sqrDist < 0.1f)
@@ -100,6 +100,7 @@ public class EarthSeekingMissile : MonoBehaviour {
         Destroy(gameObject);
     }
 
+    [PunRPC]
     public void Launch(PlanetFragment target, Vector3 direction, Vector3 upVect, Vector3 shipSpeed)
     {
         transform.rotation = Quaternion.LookRotation(direction, upVect);
@@ -109,6 +110,7 @@ public class EarthSeekingMissile : MonoBehaviour {
         m_jerkTimer = jerkDuration;
     }
 
+    [PunRPC]
     public void HardLock()
     {
         m_isHardLocked = true;
