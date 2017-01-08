@@ -75,7 +75,7 @@ public class LeDouxDouxPlayerController : MonoBehaviour
 
         if (velocityLength > realMaxSpeed)
         {
-            m_Velocity = m_Velocity.normalized * Mathf.Max(realMaxSpeed, velocityLength * 0.99f);
+            m_Velocity = m_Velocity.normalized * Mathf.Max(realMaxSpeed, velocityLength * Decceleration * Time.deltaTime);
         }
         else
         {
