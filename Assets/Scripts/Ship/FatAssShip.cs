@@ -7,24 +7,25 @@ public enum EDouxDouxUpgrades
     EDouxDouxUpgrades_DEFENCE
 }
 
-struct SPowerUP
+[System.Serializable]
+public struct SPowerUP
 {
     public uint price;
     public float coolDown;
-
 }
+
 public class FatAssShip : MonoBehaviour
 {
     [SerializeField]
-    SPowerUP offensePowerUp;
+    public SPowerUP offensePowerUp;
     [SerializeField]
-    SPowerUP defensePowerUp;
+    public SPowerUP defensePowerUp;
 
     [SerializeField]
     float pickShitUpDist = 50.0f;
 
-    float m_offenseCD;
-    float m_defenseCD;
+    public float m_offenseCD;
+    public float m_defenseCD;
 
 
     // Use this for initialization
