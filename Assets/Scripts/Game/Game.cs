@@ -70,24 +70,24 @@ public class Game : GameSingleton<Game>
     {
         m_GameEnded = true;
         Destroy(GameUICanvas);
-        GameObject canvas = Instantiate(GameOverCanvas);
-        canvas.transform.Find("ResourceText").GetComponent<Text>().text = "YOU GOT " + Resources + " PLANET SHARD" + (Resources > 1 ? "S" : "");
+        GameOverCanvas.SetActive(true);
+        GameOverCanvas.transform.Find("ResourceText").GetComponent<Text>().text = "YOU GOT " + Resources + " PLANET SHARD" + (Resources > 1 ? "S" : "");
     }
 
     private void GameOver()
     {
         m_GameEnded = true;
         Destroy(GameUICanvas);
-        GameObject canvas = Instantiate(GameOverCanvas);
-        canvas.transform.Find("ResourceText").GetComponent<Text>().text = "YOU GOT " + Resources + " PLANET SHARD" + (Resources > 1 ? "S" : "");
+        GameOverCanvas.SetActive(true);
+        GameOverCanvas.transform.Find("ResourceText").GetComponent<Text>().text = "YOU GOT " + Resources + " PLANET SHARD" + (Resources > 1 ? "S" : "");
     }
 
     private void Win()
     {
         m_GameEnded = true;
         Destroy(GameUICanvas);
-        GameObject canvas = Instantiate(WinCanvas);
-        canvas.transform.Find("ResourceText").GetComponent<Text>().text = "YOU GOT " + Resources + " PLANET SHARD" + (Resources > 1 ? "S" : "");
+        WinCanvas.SetActive(true);
+        WinCanvas.transform.Find("ResourceText").GetComponent<Text>().text = "YOU GOT " + Resources + " PLANET SHARD" + (Resources > 1 ? "S" : "");
     }
 
     public void MainMenu()
