@@ -78,7 +78,7 @@ public class FatAssShip : MonoBehaviour
                 case EDouxDouxUpgrades.EDouxDouxUpgrades_OFFENCE:
                     foreach (VaisseauQuiJoueAfuckinMinecraft ship in ships)
                     {
-                        ship.AndMyAxe();
+                        ship.GottaGoFast();
                     }
                     m_offenseCD = offensePowerUp.coolDown;
                     break;

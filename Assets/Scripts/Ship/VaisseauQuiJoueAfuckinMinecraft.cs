@@ -8,9 +8,7 @@ public class VaisseauQuiJoueAfuckinMinecraft : MonoBehaviour
     [SerializeField]
     float fuckShitUpBaseRange = 100f;
     [SerializeField]
-    float fuckShitUpBonusRange = 50f;
-    [SerializeField]
-    float fuckShitUpBonusDuration = 5.0f;
+    float gottaGoFastBonusDuration = 5.0f;
     [SerializeField]
     float leaveMeTheFuckAloneBonusDuration = 5.0f;
     [SerializeField]
@@ -21,7 +19,7 @@ public class VaisseauQuiJoueAfuckinMinecraft : MonoBehaviour
     [SerializeField]
     uint fuckShitUpNbMissile = 4;
 
-    float m_fuckShitUpBonusRemainingDuration = 0.0f;
+    float m_gottaGoFastBonusRemainingDuration = 0.0f;
     float m_leaveMeTheFuckAloneBonusRemainingDuration = 0.0f;
     float m_fuckShitUpRange;
 
@@ -57,12 +55,11 @@ public class VaisseauQuiJoueAfuckinMinecraft : MonoBehaviour
     // Update is called once per frame
     void Update ()
     {
-        if (m_fuckShitUpBonusRemainingDuration > .0f)
+        if (m_gottaGoFastBonusRemainingDuration > .0f)
         {
-            m_fuckShitUpBonusRemainingDuration -= Time.deltaTime;
-            if (m_fuckShitUpBonusRemainingDuration <= .0f)
+            m_gottaGoFastBonusRemainingDuration -= Time.deltaTime;
+            if (m_gottaGoFastBonusRemainingDuration <= .0f)
             {
-                m_fuckShitUpRange = fuckShitUpBaseRange;
             }
         }
 
@@ -95,10 +92,14 @@ public class VaisseauQuiJoueAfuckinMinecraft : MonoBehaviour
         });
     }
 
-    public void AndMyAxe()
+    public void GottaGoFast()
     {
-        m_fuckShitUpBonusRemainingDuration = fuckShitUpBonusDuration;
-        m_fuckShitUpRange = fuckShitUpBaseRange + fuckShitUpBonusRange;
+        m_gottaGoFastBonusRemainingDuration = gottaGoFastBonusDuration;
+    }
+
+    public bool IsGoingFast()
+    {
+        return m_gottaGoFastBonusRemainingDuration > .0f;
     }
 
     public void ImRubberYoureGlue()

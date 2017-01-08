@@ -2,6 +2,11 @@
 
 public class LeDouxDouxPlayerController : MonoBehaviour
 {
+    [SerializeField]
+    float gottaGoFastBonusMaxSpeed = 2.0f;
+    [SerializeField]
+    float gottaGoFastBonusAccel = 2.0f;
+
     public float CameraShipDistance = 5.0f;
     public float CameraShipAngle = 30.0f;
     public float LookAhead = 10.0f;
@@ -65,12 +70,24 @@ public class LeDouxDouxPlayerController : MonoBehaviour
 
         transform.Rotate(Vector3.up, horizontal * TurnRate * Time.deltaTime);
 
-        m_Velocity += Acceleration * (transform.forward * vertical) * Time.deltaTime;
-
+        float realMaxSpeed = MaxSpeed + (GetComponent<VaisseauQuiJoueAfuckinMinecraft>().IsGoingFast() ? gottaGoFastBonusMaxSpeed : .0f);
         float velocityLength = m_Velocity.magnitude;
-        if (velocityLength > MaxSpeed)
+
+        if (velocityLength > realMaxSpeed)
         {
-            m_Velocity = m_Velocity.normalized * MaxSpeed;
+            m_Velocity = m_Velocity.normalized * Mathf.Max(realMaxSpeed, velocityLength * 0.99f);
+        }
+        else
+        {
+            float realAccel = Acceleration + (GetComponent<VaisseauQuiJoueAfuckinMinecraft>().IsGoingFast() ? gottaGoFastBonusAccel : .0f);
+            m_Velocity += realAccel * (transform.forward * vertical) * Time.deltaTime;
+
+            velocityLength = m_Velocity.magnitude;
+
+            if (velocityLength > MaxSpeed)
+            {
+                m_Velocity = m_Velocity.normalized * MaxSpeed;
+            }
         }
 
         Vector3 nextPosition = transform.position + m_Velocity * Time.deltaTime;
