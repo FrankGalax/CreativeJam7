@@ -27,7 +27,7 @@ public class Volcano : MonoBehaviour {
     {
         if (m_IsComingOut)
         {
-            GetComponentInParent<Collider>().gameObject.transform.position += Direction * EruptionSpeed * Time.fixedDeltaTime;
+            GetComponentInChildren<Collider>().gameObject.transform.position += Direction * EruptionSpeed * Time.fixedDeltaTime;
             m_Displacement += EruptionSpeed * Time.fixedDeltaTime;
             if (m_Displacement >= Length)
             {
