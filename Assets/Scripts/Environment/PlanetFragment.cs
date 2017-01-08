@@ -66,10 +66,15 @@ public class PlanetFragment : MonoBehaviour {
         GetComponentInParent<Renderer>().enabled = false;
     }
 
-    [PunRPC]
     public void Respawn()
     {
         GetComponentInParent<DamageComponent>().Revive();
+        INetwork.Instance.RPC(gameObject, "EnableRenderer", PhotonTargets.All);
+    }
+
+    [PunRPC]
+    public void EnableRenderer()
+    {
         GetComponentInParent<Renderer>().enabled = true;
     }
     
