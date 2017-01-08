@@ -64,7 +64,6 @@ public class VaisseauQuiJoueAfuckinMinecraft : MonoBehaviour
         if (target != null)
         {
             INetwork.Instance.RPC(target.gameObject, "TakeDamage", PhotonTargets.MasterClient);
-            //target.GetComponentInParent<DamageComponent>().TakeDamage();
         }
     }
 

@@ -14,11 +14,7 @@ public class PlanetFragment : MonoBehaviour {
 
     // Use this for initialization
     void Start() {
-        //INetwork.Instance.RPC(gameObject, "TakeDamage", PhotonTargets.MasterClient);
-        if (INetwork.Instance.IsMaster())
-        {
-            HandleDeath();
-        }
+
     }
 	
 	// Update is called once per frame
