@@ -102,6 +102,8 @@ public class VaisseauQuiJoueAfuckinMinecraft : MonoBehaviour
     {
         m_gottaGoFastBonusRemainingDuration = gottaGoFastBonusDuration;
         m_TrusterFX.SetActive(true);
+
+        transform.Find("PowerUpSound").GetComponent<AudioSource>().Play();
     }
 
     public bool IsGoingFast()
@@ -114,6 +116,8 @@ public class VaisseauQuiJoueAfuckinMinecraft : MonoBehaviour
     {
         m_leaveMeTheFuckAloneBonusRemainingDuration = leaveMeTheFuckAloneBonusDuration;
         daShields.GetComponent<Renderer>().enabled = true;
+
+        transform.Find("PowerUpSound").GetComponent<AudioSource>().Play();
     }
 
     public void PewPew()
