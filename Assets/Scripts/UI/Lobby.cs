@@ -57,15 +57,20 @@ public class Lobby : MonoBehaviour
         m_NbPlayerReady++;
         if (m_NbPlayerReady == INetwork.Instance.GetPlayerCount())
         {
+            INetwork.Instance.RPC(gameObject, "StartMusic", PhotonTargets.All);
             StartCoroutine(StartGame());
         }
     }
 
-    private IEnumerator StartGame()
+    [PunRPC]
+    private void StartMusic()
     {
         Destroy(MenuMusic.Instance.gameObject);
         GameMusic.Instance.GetComponent<AudioSource>().Play();
+    }
 
+    private IEnumerator StartGame()
+    {
         yield return new WaitForSeconds(1.5f);
 
         INetwork.Instance.SetRoomStarted();
