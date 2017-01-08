@@ -104,9 +104,12 @@ public class Game : GameSingleton<Game>
 
     public void ColorizePlanet()
     {
-        for (int i = 0; i < Zones.Count; ++i)
+        Zones.ForEach(zone =>
         {
-
-        }
+            zone.Fragments.ForEach(fragment =>
+            {
+                fragment.PrimaryColor = zone.Color;
+            });
+        });
     }
 }

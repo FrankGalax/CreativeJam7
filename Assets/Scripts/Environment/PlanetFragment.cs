@@ -11,6 +11,16 @@ public class PlanetFragment : MonoBehaviour {
     public float InitialCashVelocity = 1.0f;
 
     GameObject m_Volcano;
+    public Color PrimaryColor
+    {
+        set
+        {
+            m_PrimaryColor = value;
+            MeshRenderer renderer = GetComponent<MeshRenderer>();
+            renderer.material.color = value;
+        }
+    }
+    private Color m_PrimaryColor;
 
     // Use this for initialization
     void Start() {

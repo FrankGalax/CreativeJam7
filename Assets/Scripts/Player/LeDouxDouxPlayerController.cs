@@ -18,7 +18,6 @@ public class LeDouxDouxPlayerController : MonoBehaviour
     public Vector3 m_Velocity { get; private set; }
     private bool m_ChangedDirection;
     private Vector3 m_NextCameraPosition;
-    private bool m_isShooting;
 
     void Awake()
     {
@@ -33,7 +32,6 @@ public class LeDouxDouxPlayerController : MonoBehaviour
         m_Normal = (transform.position - m_Planet.transform.position).normalized;
         Vector3 forward = Vector3.ProjectOnPlane(transform.forward, m_Normal).normalized;
         transform.rotation = Quaternion.LookRotation(forward, m_Normal);
-        m_isShooting = false;
     }
 
     void Update()
@@ -117,13 +115,9 @@ public class LeDouxDouxPlayerController : MonoBehaviour
 
     private void UpdateShoot()
     {
-        bool shoot = Input.GetButtonDown("Fire1");
-
-        if (shoot && !m_isShooting)
+        if (Input.GetButtonDown("Fire1"))
         {
             GetComponent<VaisseauQuiJoueAfuckinMinecraft>().PewPew();
         }
-
-        m_isShooting = shoot;
     }
 }
