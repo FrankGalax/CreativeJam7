@@ -1,5 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
 
 public class VaisseauQuiJoueAfuckinMinecraft : MonoBehaviour
 {
@@ -24,7 +26,7 @@ public class VaisseauQuiJoueAfuckinMinecraft : MonoBehaviour
     float m_fuckShitUpRange;
 
     PlanetFragment m_bestTarget;
-    GameObject m_CooldownFX;
+    List<GameObject> m_CooldownFXs;
     private bool m_isShooting;
     private float m_ShootingTimer;
     public float ShootCooldown = 2.0f;
@@ -34,9 +36,11 @@ public class VaisseauQuiJoueAfuckinMinecraft : MonoBehaviour
     {
         m_fuckShitUpRange = fuckShitUpBaseRange;
         m_bestTarget = null;
-        m_CooldownFX = transform.Find("CooldownFX").gameObject;
-        m_CooldownFX.SetActive(false);
         daShields.GetComponent<Renderer>().enabled = false;
+        m_CooldownFXs = new List<GameObject>();
+        m_CooldownFXs.Add(transform.Find("CooldownFX1").gameObject);
+        m_CooldownFXs.Add(transform.Find("CooldownFX2").gameObject);
+        m_CooldownFXs.ForEach(p => p.SetActive(false));
 	}
 
     public void OnDamageTaken()
@@ -85,8 +89,10 @@ public class VaisseauQuiJoueAfuckinMinecraft : MonoBehaviour
             }
         }
 
-        m_CooldownFX.SetActive(m_isShooting);
-        m_CooldownFX.transform.rotation = transform.rotation;
+        m_CooldownFXs.ForEach(p =>
+        {
+            p.SetActive(m_isShooting);
+        });
     }
 
     public void AndMyAxe()
@@ -111,8 +117,6 @@ public class VaisseauQuiJoueAfuckinMinecraft : MonoBehaviour
         {
             INetwork.Instance.RPC(gameObject, "LaunchMissile", PhotonTargets.All, INetwork.Instance.GetViewId(target.gameObject));
         }
-
-        ImRubberYoureGlue();
     }
 
     [PunRPC]
