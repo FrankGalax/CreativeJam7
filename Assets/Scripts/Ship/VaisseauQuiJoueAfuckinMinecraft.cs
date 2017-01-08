@@ -63,7 +63,8 @@ public class VaisseauQuiJoueAfuckinMinecraft : MonoBehaviour
         PlanetFragment target = FindBestTarget();
         if (target != null)
         {
-            target.GetComponentInParent<DamageComponent>().TakeDamage();
+            INetwork.Instance.RPC(target.gameObject, "TakeDamage", PhotonTargets.MasterClient);
+            //target.GetComponentInParent<DamageComponent>().TakeDamage();
         }
     }
 

@@ -23,6 +23,7 @@ public class DamageComponent : MonoBehaviour {
 	
 	}
 
+    [PunRPC]
     public void TakeDamage()
     {
         if (m_IsDead || m_OnCooldown)
@@ -42,12 +43,13 @@ public class DamageComponent : MonoBehaviour {
         }
     }
 
-    public void Die()
+    private void Die()
     {
         m_IsDead = true;
         SendMessage("HandleDeath");
     }
 
+    [PunRPC]
     public void Revive()
     {
         m_IsDead = false;
