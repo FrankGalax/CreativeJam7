@@ -103,6 +103,8 @@ public class Game : GameSingleton<Game>
                 reasonText.text = "YOU DID NOT MINE ENOUGH RESOURCES.";
                 break;
         }
+
+        transform.Find("GameOverSound").GetComponent<AudioSource>().Play();
     }
 
     [PunRPC]
