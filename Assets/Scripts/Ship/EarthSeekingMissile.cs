@@ -104,8 +104,7 @@ public class EarthSeekingMissile : MonoBehaviour {
     {
         Destroy(gameObject);
     }
-
-    [PunRPC]
+    
     public void Launch(PlanetFragment target, Vector3 direction, Vector3 upVect, Vector3 shipSpeed)
     {
         transform.rotation = Quaternion.LookRotation(direction, upVect);

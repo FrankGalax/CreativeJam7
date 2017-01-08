@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System;
 
 public class PlanetFragment : MonoBehaviour {
 
@@ -94,12 +95,12 @@ public class PlanetFragment : MonoBehaviour {
             Vector3 center = GetComponent<Renderer>().bounds.center;
             Vector3 up = center - transform.position;
 
-            Vector3 direction = Quaternion.AngleAxis(Random.Range(-45, 45), transform.right) * up;
-            direction = Quaternion.AngleAxis(Random.Range(-45, 45), transform.forward) * direction;
+            Vector3 direction = Quaternion.AngleAxis(UnityEngine.Random.Range(-45, 45), transform.right) * up;
+            direction = Quaternion.AngleAxis(UnityEngine.Random.Range(-45, 45), transform.forward) * direction;
             direction.Normalize();
             Vector3 velocity = direction * InitialCashVelocity;
 
-            if (cumulativePointValueSpawned + grosCashValue <= TotalPointValue && Random.Range(0.0f, 1.0f) < grosCashDropRate)
+            if (cumulativePointValueSpawned + grosCashValue <= TotalPointValue && UnityEngine.Random.Range(0.0f, 1.0f) < grosCashDropRate)
             {
                 GameObject grosCashSale = INetwork.Instance.Instantiate(ResourceManager.GetPrefab("GrosCashSale"), center, transform.rotation);
                 INetwork.Instance.RPC(gameObject, "SetCashParams", PhotonTargets.All, new object[] { INetwork.Instance.GetViewId(grosCashSale), velocity });

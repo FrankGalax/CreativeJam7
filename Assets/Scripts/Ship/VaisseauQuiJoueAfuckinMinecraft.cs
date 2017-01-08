@@ -75,16 +75,26 @@ public class VaisseauQuiJoueAfuckinMinecraft : MonoBehaviour
         PlanetFragment target = FindBestTarget();
         if (target != null)
         {
-            for (uint missileIndex = 0; missileIndex < fuckShitUpNbMissile; missileIndex++)
-            {
-                Vector3 launchDirection = Quaternion.AngleAxis(Random.Range(-25, 25), transform.up) * ((missileIndex % 2 == 0 ? 1 : -1) * transform.right);
-                GameObject missileGO = INetwork.Instance.Instantiate(ResourceManager.GetPrefab("Missile"), transform.position, Quaternion.identity);
-                INetwork.Instance.RPC(missileGO, "Launch", PhotonTargets.MasterClient, target, launchDirection, transform.up, GetComponent<LeDouxDouxPlayerController>().m_Velocity);
-            }
-
-            m_isShooting = true;
-            m_ShootingTimer = ShootCooldown;
+            INetwork.Instance.RPC(gameObject, "LaunchMissile", PhotonTargets.All, INetwork.Instance.GetViewId(target.gameObject));
         }
+    }
+
+    [PunRPC]
+    private void LaunchMissile(int targetId)
+    {
+        GameObject targetObj = INetwork.Instance.GetGameObjectWithView(targetId);
+        if (targetObj == null)
+            return;
+
+        for (uint missileIndex = 0; missileIndex < fuckShitUpNbMissile; missileIndex++)
+        {
+            Vector3 launchDirection = Quaternion.AngleAxis(Random.Range(-25, 25), transform.up) * ((missileIndex % 2 == 0 ? 1 : -1) * transform.right);
+            GameObject missileGO = (GameObject)Instantiate(ResourceManager.GetPrefab("Missile"), transform.position, Quaternion.identity);
+            missileGO.GetComponent<EarthSeekingMissile>().Launch(targetObj.GetComponent<PlanetFragment>(), launchDirection, transform.up, GetComponent<LeDouxDouxPlayerController>().m_Velocity);
+        }
+
+        m_isShooting = true;
+        m_ShootingTimer = ShootCooldown;
     }
 
     PlanetFragment FindBestTarget()
