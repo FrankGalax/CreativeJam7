@@ -29,6 +29,11 @@ public class EarthSeekingMissile : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
+        if (m_target == null)
+        {
+            Destroy(gameObject);
+            return;
+        }
 
         Vector3 planetPos = GameObject.FindObjectOfType<Planet>().transform.position;
         float missileRadius = (transform.position - planetPos).magnitude;
