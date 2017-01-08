@@ -119,6 +119,7 @@ public class Game : GameSingleton<Game>
 
     public void MainMenu()
     {
+        Destroy(GameMusic.Instance.gameObject);
         INetwork.Instance.Disconnect();
         SceneManager.LoadScene("mainMenu");
     }

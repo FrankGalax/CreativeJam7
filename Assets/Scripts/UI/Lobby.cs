@@ -17,6 +17,7 @@ public class Lobby : MonoBehaviour
         INetwork network = INetwork.Instance;
         if (!network.IsConnected)
         {
+            Destroy(GameMusic.Instance.gameObject);
             SceneManager.LoadScene("MainMenu");
             return;
         }
@@ -62,11 +63,12 @@ public class Lobby : MonoBehaviour
 
     private IEnumerator StartGame()
     {
-        yield return new WaitForSeconds(1.0f);
+        Destroy(MenuMusic.Instance.gameObject);
+        GameMusic.Instance.GetComponent<AudioSource>().Play();
+
+        yield return new WaitForSeconds(1.5f);
 
         INetwork.Instance.SetRoomStarted();
         INetwork.Instance.LoadLevel(GameSceneName);
-
-        Destroy(MenuMusic.Instance.gameObject);
     }
 }
