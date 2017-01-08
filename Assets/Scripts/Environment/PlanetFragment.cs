@@ -14,7 +14,7 @@ public class PlanetFragment : MonoBehaviour {
 
     // Use this for initialization
     void Start() {
-
+        HideFragment();
     }
 	
 	// Update is called once per frame
@@ -76,8 +76,8 @@ public class PlanetFragment : MonoBehaviour {
         uint cumulativePointValueSpawned = 0;
         while (cumulativePointValueSpawned < TotalPointValue)
         {
-            Vector3 direction = Quaternion.AngleAxis(Random.Range(-45, 45), Vector3.right) * transform.up;
-            direction = Quaternion.AngleAxis(Random.Range(-45, 45), Vector3.forward) * direction;
+            Vector3 direction = Quaternion.AngleAxis(Random.Range(-45, 45), transform.right) * transform.up;
+            direction = Quaternion.AngleAxis(Random.Range(-45, 45), transform.forward) * direction;
             direction.Normalize();
             Vector3 velocity = direction * InitialCashVelocity;
 
