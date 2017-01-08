@@ -17,6 +17,7 @@ public class LeDouxDouxPlayerController : MonoBehaviour
     public float Decceleration = 1.0f;
     public float MaxSpeed = 1.0f;
     public float TurnRate = 1.0f;
+    public GameObject MovingSound;
 
     private Planet m_Planet;
     private Vector3 m_Normal;
@@ -66,6 +67,11 @@ public class LeDouxDouxPlayerController : MonoBehaviour
                 length = 0.0f;
             }
             m_Velocity = velocityDirection * length;
+            MovingSound.SetActive(false);
+        }
+        else
+        {
+            MovingSound.SetActive(true);
         }
 
         transform.Rotate(Vector3.up, horizontal * TurnRate * Time.deltaTime);

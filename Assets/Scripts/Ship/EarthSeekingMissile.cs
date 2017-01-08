@@ -62,7 +62,7 @@ public class EarthSeekingMissile : MonoBehaviour {
 
             float ratio = m_jerkTimer / jerkDuration;
 
-            m_velocity += m_acceleration * distUnwrapperSurUnPlane.normalized + (m_jerkTimer > jerkDuration/2.0f ? 1.0f : -1.0f) * jerk * transform.forward * Time.deltaTime;
+            m_velocity += m_acceleration * distUnwrapperSurUnPlane.normalized + (m_jerkTimer > jerkDuration/2.0f ? 1.0f : -1.25f) * jerk * transform.forward * Time.deltaTime;
         }
         else
         {

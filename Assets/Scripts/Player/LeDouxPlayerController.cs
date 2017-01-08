@@ -8,6 +8,7 @@ public class LeDouxPlayerController : MonoBehaviour
     public float Decceleration = 1.0f;
     public float MaxSpeed = 1.0f;
     public float TurnRate = 1.0f;
+    public GameObject MovingSound;
 
     private Planet m_Planet;
     private Vector3 m_Normal;
@@ -48,6 +49,7 @@ public class LeDouxPlayerController : MonoBehaviour
         // deceleration
         if (vertical == 0.0f && horizontal == 0.0f)
         {
+            MovingSound.SetActive(false);
             Vector3 velocityDirection = m_Velocity.normalized;
             float length = m_Velocity.magnitude;
             length -= Decceleration * Time.deltaTime;
@@ -56,6 +58,10 @@ public class LeDouxPlayerController : MonoBehaviour
                 length = 0.0f;
             }
             m_Velocity = velocityDirection * length;
+        }
+        else
+        {
+            MovingSound.SetActive(true);
         }
 
         m_Velocity += Acceleration * (camera.transform.up * vertical + camera.transform.right * horizontal) * Time.deltaTime;
