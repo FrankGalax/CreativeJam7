@@ -68,7 +68,7 @@ public class Game : GameSingleton<Game>
         {
             if (zone.Fragments.All(p => p.IsDestroyed()))
             {
-                INetwork.Instance.RPC(gameObject, "GameOverZone", PhotonTargets.All, 0, zone.Name, (int)Resources);
+                INetwork.Instance.RPC(gameObject, "GameOver", PhotonTargets.All, 0, zone.Name, (int)Resources);
                 return;
             }
 
