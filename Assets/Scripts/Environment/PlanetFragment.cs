@@ -49,8 +49,7 @@ public class PlanetFragment : MonoBehaviour {
     [PunRPC]
     private void HideFragment()
     {
-        GameObject layer1 = transform.Find("graphics/Layer1Fragment").gameObject;
-        layer1.GetComponent<Renderer>().enabled = false;
+        GetComponentInParent<Renderer>().enabled = false;
     }
 
     public void Respawn()
@@ -77,20 +76,20 @@ public class PlanetFragment : MonoBehaviour {
         uint cumulativePointValueSpawned = 0;
         while (cumulativePointValueSpawned < TotalPointValue)
         {
-            Vector3 direction = Quaternion.AngleAxis(Random.Range(-45, 45), Vector3.right) * transform.up;
-            direction = Quaternion.AngleAxis(Random.Range(-45, 45), Vector3.forward) * direction;
+            Vector3 direction = Quaternion.AngleAxis(Random.Range(-45, 45), transform.right) * transform.up;
+            direction = Quaternion.AngleAxis(Random.Range(-45, 45), transform.forward) * direction;
             direction.Normalize();
             Vector3 velocity = direction * InitialCashVelocity;
 
             if (cumulativePointValueSpawned + grosCashValue <= TotalPointValue && Random.Range(0.0f, 1.0f) < grosCashDropRate)
             {
-                GameObject grosCashSale = INetwork.Instance.Instantiate(ResourceManager.GetPrefab("GrosCashSale"), transform.position, transform.rotation);
+                GameObject grosCashSale = INetwork.Instance.Instantiate(ResourceManager.GetPrefab("GrosCashSale"), GetComponent<Renderer>().bounds.center, transform.rotation);
                 INetwork.Instance.RPC(gameObject, "SetCashParams", PhotonTargets.All, new object[] { INetwork.Instance.GetViewId(grosCashSale), velocity });
                 cumulativePointValueSpawned += grosCashValue;
             }
             else
             {
-                GameObject petiteMonnaie = INetwork.Instance.Instantiate(ResourceManager.GetPrefab("PetiteMonnaie"), transform.position, transform.rotation);
+                GameObject petiteMonnaie = INetwork.Instance.Instantiate(ResourceManager.GetPrefab("PetiteMonnaie"), GetComponent<Renderer>().bounds.center, transform.rotation);
                 INetwork.Instance.RPC(gameObject, "SetCashParams", PhotonTargets.All, new object[] { INetwork.Instance.GetViewId(petiteMonnaie), velocity });
                 cumulativePointValueSpawned += petiteMonnaieValue;
             }

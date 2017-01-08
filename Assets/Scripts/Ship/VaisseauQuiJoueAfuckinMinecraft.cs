@@ -9,6 +9,8 @@ public class VaisseauQuiJoueAfuckinMinecraft : MonoBehaviour
     float fuckShitUpBonusRange = 0.05f;
     [SerializeField]
     float fuckShitUpBonusDuration = 5.0f;
+    [SerializeField]
+    uint fuckShitUpNbMissile = 4;
 
     float m_fuckShitUpBonusRemainingDuration = 0.0f;
     float m_fuckShitUpRange;
@@ -33,18 +35,6 @@ public class VaisseauQuiJoueAfuckinMinecraft : MonoBehaviour
                 m_fuckShitUpRange = fuckShitUpBaseRange;
             }
         }
-
-        PlanetFragment frag = FindBestTarget();
-        if (m_bestTarget != frag)
-        {
-            if (m_bestTarget != null)
-            {
-                m_bestTarget.gameObject.transform.localScale = Vector3.one;
-            }
-
-            frag.gameObject.transform.localScale = 1.5f * Vector3.one;
-            m_bestTarget = frag;
-        }
 	}
 
     public void AndMyAxe()
@@ -63,7 +53,12 @@ public class VaisseauQuiJoueAfuckinMinecraft : MonoBehaviour
         PlanetFragment target = FindBestTarget();
         if (target != null)
         {
-            INetwork.Instance.RPC(target.gameObject, "TakeDamage", PhotonTargets.MasterClient);
+            for (uint missileIndex = 0; missileIndex < fuckShitUpNbMissile; missileIndex++)
+            {
+                Vector3 launchDirection = Quaternion.AngleAxis(Random.Range(-25, 25), transform.up) * ((missileIndex % 2 == 0 ? 1 : -1) * transform.right);
+                GameObject missileGO = INetwork.Instance.Instantiate(ResourceManager.GetPrefab("Missile"), transform.position, Quaternion.identity);
+                INetwork.Instance.RPC(missileGO, "Launch", PhotonTargets.MasterClient, target, launchDirection, transform.up, GetComponent<LeDouxDouxPlayerController>().m_Velocity);
+            }
         }
     }
 
@@ -80,11 +75,11 @@ public class VaisseauQuiJoueAfuckinMinecraft : MonoBehaviour
 
         foreach (PlanetFragment fragment in fragments)
         {
-            float distanceFuckingRadial = Vector3.Angle(transform.position - planet.transform.position, fragment.transform.position - planet.transform.position) * Mathf.Deg2Rad * planet.Radius;
+            float distanceFuckingRadial = Vector3.Angle(transform.position - planet.transform.position, fragment.GetComponent<Renderer>().bounds.center - planet.transform.position) * Mathf.Deg2Rad * planet.Radius;
 
             if (distanceFuckingRadial <= m_fuckShitUpRange && fragment.GetComponentInChildren<Renderer>().isVisible)
             {
-                Vector3 distUnwrapperSurUnPlane = Vector3.ProjectOnPlane(fragment.gameObject.transform.position - transform.position, transform.up).normalized;
+                Vector3 distUnwrapperSurUnPlane = Vector3.ProjectOnPlane(fragment.GetComponent<Renderer>().bounds.center - transform.position, transform.up).normalized;
                 float dot = Vector3.Dot(transform.forward, distUnwrapperSurUnPlane) / distanceFuckingRadial;
 
                 if (dot > bestDot && (Vector3.Angle(distUnwrapperSurUnPlane, transform.forward) <= 60.0f || distanceFuckingRadial < 50.0f))

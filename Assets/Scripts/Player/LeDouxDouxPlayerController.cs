@@ -15,7 +15,8 @@ public class LeDouxDouxPlayerController : MonoBehaviour
 
     private Planet m_Planet;
     private Vector3 m_Normal;
-    private Vector3 m_Velocity;
+    public Vector3 m_Velocity { get; private set; }
+    private bool m_ChangedDirection;
     private Vector3 m_NextCameraPosition;
     private bool m_isShooting;
     private Vector3 m_LastTarget;
