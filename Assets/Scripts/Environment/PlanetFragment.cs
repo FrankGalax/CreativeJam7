@@ -14,7 +14,7 @@ public class PlanetFragment : MonoBehaviour {
 
     // Use this for initialization
     void Start() {
-        HideFragment();
+
     }
 	
 	// Update is called once per frame
@@ -83,13 +83,13 @@ public class PlanetFragment : MonoBehaviour {
 
             if (cumulativePointValueSpawned + grosCashValue <= TotalPointValue && Random.Range(0.0f, 1.0f) < grosCashDropRate)
             {
-                GameObject grosCashSale = INetwork.Instance.Instantiate(ResourceManager.GetPrefab("GrosCashSale"), transform.position, transform.rotation);
+                GameObject grosCashSale = INetwork.Instance.Instantiate(ResourceManager.GetPrefab("GrosCashSale"), GetComponent<Renderer>().bounds.center, transform.rotation);
                 INetwork.Instance.RPC(gameObject, "SetCashParams", PhotonTargets.All, new object[] { INetwork.Instance.GetViewId(grosCashSale), velocity });
                 cumulativePointValueSpawned += grosCashValue;
             }
             else
             {
-                GameObject petiteMonnaie = INetwork.Instance.Instantiate(ResourceManager.GetPrefab("PetiteMonnaie"), transform.position, transform.rotation);
+                GameObject petiteMonnaie = INetwork.Instance.Instantiate(ResourceManager.GetPrefab("PetiteMonnaie"), GetComponent<Renderer>().bounds.center, transform.rotation);
                 INetwork.Instance.RPC(gameObject, "SetCashParams", PhotonTargets.All, new object[] { INetwork.Instance.GetViewId(petiteMonnaie), velocity });
                 cumulativePointValueSpawned += petiteMonnaieValue;
             }
