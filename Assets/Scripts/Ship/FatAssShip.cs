@@ -15,12 +15,13 @@ struct SPowerUP
 }
 public class FatAssShip : MonoBehaviour
 {
-    uint m_duGrosCashSale = 10;
-
     [SerializeField]
     SPowerUP offensePowerUp;
     [SerializeField]
     SPowerUP defensePowerUp;
+
+    [SerializeField]
+    float pickShitUpDist = 50.0f;
 
     float m_offenseCD;
     float m_defenseCD;
@@ -44,15 +45,18 @@ public class FatAssShip : MonoBehaviour
         {
             m_defenseCD -= Time.deltaTime;
         }
-    }
 
-    void OnCollisionEnter(Collision collision)
-    {
-        CashSale cashSale = collision.collider.gameObject.GetComponent<CashSale>();
-        if (cashSale != null)
+        if (INetwork.Instance.IsMine(gameObject))
         {
-            m_duGrosCashSale += cashSale.GetValue();
-            Destroy(collision.collider.gameObject);
+            CashSale[] benDuCashSale = GameObject.FindObjectsOfType<CashSale>();
+            foreach (CashSale cash in benDuCashSale)
+            {
+                if (Vector3.SqrMagnitude(cash.transform.position - transform.position) > pickShitUpDist)
+                {
+                    Game.Instance.Resources += cash.GetValue();
+                    Destroy(cash.gameObject);
+                }
+            }
         }
     }
 
@@ -86,9 +90,9 @@ public class FatAssShip : MonoBehaviour
         switch (iReallyReallyNeedThis)
         {
             case EDouxDouxUpgrades.EDouxDouxUpgrades_OFFENCE:
-                return m_duGrosCashSale >= offensePowerUp.price && m_offenseCD >= 0.0f;
+                return Game.Instance.Resources >= offensePowerUp.price && m_offenseCD >= 0.0f;
             case EDouxDouxUpgrades.EDouxDouxUpgrades_DEFENCE:
-                return m_duGrosCashSale >= defensePowerUp.price && m_defenseCD >= 0.0f;
+                return Game.Instance.Resources >= defensePowerUp.price && m_defenseCD >= 0.0f;
         }
         return false;
     }

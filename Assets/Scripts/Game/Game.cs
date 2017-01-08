@@ -8,7 +8,7 @@ public class Game : GameSingleton<Game>
 {
     public List<PlanetZone> Zones;
     public int MaxDestroyedZones = 20;
-    public int Resources { get; set; }
+    public uint Resources { get; set; }
     public int NbResourcesToWin = 100;
     public float MaxGameTime = 180.0f;
     public float GameTime { get; private set; }
