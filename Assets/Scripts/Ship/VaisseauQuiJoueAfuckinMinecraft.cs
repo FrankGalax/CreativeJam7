@@ -58,9 +58,6 @@ public class VaisseauQuiJoueAfuckinMinecraft : MonoBehaviour
         if (m_gottaGoFastBonusRemainingDuration > .0f)
         {
             m_gottaGoFastBonusRemainingDuration -= Time.deltaTime;
-            if (m_gottaGoFastBonusRemainingDuration <= .0f)
-            {
-            }
         }
 
         if (m_leaveMeTheFuckAloneBonusRemainingDuration > .0f)
@@ -92,6 +89,7 @@ public class VaisseauQuiJoueAfuckinMinecraft : MonoBehaviour
         });
     }
 
+    [PunRPC]
     public void GottaGoFast()
     {
         m_gottaGoFastBonusRemainingDuration = gottaGoFastBonusDuration;
@@ -102,6 +100,7 @@ public class VaisseauQuiJoueAfuckinMinecraft : MonoBehaviour
         return m_gottaGoFastBonusRemainingDuration > .0f;
     }
 
+    [PunRPC]
     public void ImRubberYoureGlue()
     {
         m_leaveMeTheFuckAloneBonusRemainingDuration = leaveMeTheFuckAloneBonusDuration;
