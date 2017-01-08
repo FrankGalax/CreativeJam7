@@ -28,6 +28,7 @@ public class MainMenu : PunBehaviour
     public void Play()
     {
         INetwork.Instance.Connect();
+        m_PlayButton.interactable = false;
     }
 
     public override void OnJoinedLobby()
