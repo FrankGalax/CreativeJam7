@@ -46,7 +46,7 @@ public class Game : GameSingleton<Game>
         {
             if (zone.Fragments.All(p => p.IsDestroyed()))
             {
-                INetwork.Instance.RPC(gameObject, "GameOverZone", PhotonTargets.All, zone.Name);
+                INetwork.Instance.RPC(gameObject, "GameOverZone", PhotonTargets.All, 0, zone.Name, (int)Resources);
                 return;
             }
 
@@ -55,7 +55,7 @@ public class Game : GameSingleton<Game>
 
         if (destroyedZonesCount >= MaxDestroyedZones)
         {
-            INetwork.Instance.RPC(gameObject, "GameOver", PhotonTargets.All);
+            INetwork.Instance.RPC(gameObject, "GameOver", PhotonTargets.All, 1, string.Empty, (int)Resources);
             return;
         }
         
@@ -72,43 +72,47 @@ public class Game : GameSingleton<Game>
             GameTime = 0;
             if (Resources >= NbResourcesToWin)
             {
-                INetwork.Instance.RPC(gameObject, "Win", PhotonTargets.All);
+                INetwork.Instance.RPC(gameObject, "Win", PhotonTargets.All, (int)Resources);
             }
             else
             {
-                INetwork.Instance.RPC(gameObject, "GameOver", PhotonTargets.All);
+                INetwork.Instance.RPC(gameObject, "GameOver", PhotonTargets.All, 2, string.Empty, (int)Resources);
             }
         }
     }
 
     [PunRPC]
-    private void GameOverZone(int destroyedZoneId)
+    private void GameOver(int reason, string zone, int resources)
     {
         m_GameEnded = true;
         MothershipCanvas.SetActive(false);
         StandardShipCanvas.SetActive(false);
         GameOverCanvas.SetActive(true);
-        GameOverCanvas.transform.Find("ResourceText").GetComponent<Text>().text = "YOU GOT " + Resources + " PLANET SHARD" + (Resources > 1 ? "S" : "");
+        GameOverCanvas.transform.Find("ResourceText").GetComponent<Text>().text = "YOU GOT " + resources + " PLANET SHARD" + (resources > 1 ? "S" : "");
+        Text reasonText = GameOverCanvas.transform.Find("Reason").GetComponent<Text>();
+        switch (reason)
+        {
+            case 0:
+                reasonText.text = "YOU MINED ALL THE RESOURCES IN THE " + zone + " ZONE TOO QUICKLY.";
+                break;
+            case 1:
+                reasonText.text = "YOU MINED TOO MANY RESOURCES. THE PLANET'S CORE EXPLODED.";
+                break;
+            case 2:
+            default:
+                reasonText.text = "YOU DID NOT MINE ENOUGH RESOURCES.";
+                break;
+        }
     }
 
     [PunRPC]
-    private void GameOver()
-    {
-        m_GameEnded = true;
-        MothershipCanvas.SetActive(false);
-        StandardShipCanvas.SetActive(false);
-        GameOverCanvas.SetActive(true);
-        GameOverCanvas.transform.Find("ResourceText").GetComponent<Text>().text = "YOU GOT " + Resources + " PLANET SHARD" + (Resources > 1 ? "S" : "");
-    }
-
-    [PunRPC]
-    private void Win()
+    private void Win(uint resources)
     {
         m_GameEnded = true;
         MothershipCanvas.SetActive(false);
         StandardShipCanvas.SetActive(false);
         WinCanvas.SetActive(true);
-        WinCanvas.transform.Find("ResourceText").GetComponent<Text>().text = "YOU GOT " + Resources + " PLANET SHARD" + (Resources > 1 ? "S" : "");
+        WinCanvas.transform.Find("ResourceText").GetComponent<Text>().text = "YOU GOT " + resources + " PLANET SHARD" + (resources > 1 ? "S" : "");
     }
 
     [PunRPC]
