@@ -44,11 +44,11 @@ public class VaisseauQuiJoueAfuckinMinecraft : MonoBehaviour
     public void OnDamageTaken()
     {
         if (m_leaveMeTheFuckAloneBonusRemainingDuration > .0f) return;
-        
+
         StunComponent sc = GetComponent<StunComponent>();
         if (sc != null)
         {
-            sc.GetStunned();
+            INetwork.Instance.RPC(gameObject, "GetStunned", PhotonTargets.All);
         }
     }
 

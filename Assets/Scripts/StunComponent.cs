@@ -22,16 +22,19 @@ public class StunComponent : MonoBehaviour {
             LeDouxPlayerController ldpc = gameObject.GetComponent<LeDouxPlayerController>();
             LeDouxDouxPlayerController lddpc = gameObject.GetComponent<LeDouxDouxPlayerController>();
 
-            if (ldpc != null && ldpc.enabled)
+            if (INetwork.Instance.IsMine(gameObject))
             {
-                ldpc.enabled = false;
-            }
+                if (ldpc != null && ldpc.enabled)
+                {
+                    ldpc.enabled = false;
+                }
 
-            if (lddpc != null && lddpc.enabled)
-            {
-                lddpc.enabled = false;
+                if (lddpc != null && lddpc.enabled)
+                {
+                    lddpc.enabled = false;
+                }
             }
-
+        
             Renderer renderer = gameObject.GetComponentInChildren<Renderer>();
 
             renderer.enabled = !renderer.enabled;
@@ -41,20 +44,23 @@ public class StunComponent : MonoBehaviour {
             {
                 m_isStunned = false;
 
-                if (ldpc != null && !ldpc.enabled)
+                if (INetwork.Instance.IsMine(gameObject))
                 {
-                    ldpc.enabled = true;
-                }
+                    if (ldpc != null && !ldpc.enabled)
+                    {
+                        ldpc.enabled = true;
+                    }
 
-                if (lddpc != null && !lddpc.enabled)
-                {
-                    lddpc.enabled = true;
+                    if (lddpc != null && !lddpc.enabled)
+                    {
+                        lddpc.enabled = true;
+                    }
                 }
                 renderer.enabled = true;
             }
         }
 	}
-
+    [PunRPC]
     public void GetStunned()
     {
         m_timer = stunDuration;

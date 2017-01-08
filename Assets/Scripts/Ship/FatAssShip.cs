@@ -64,7 +64,7 @@ public class FatAssShip : MonoBehaviour
         StunComponent sc = GetComponent<StunComponent>();
         if (sc != null)
         {
-            sc.GetStunned();
+            INetwork.Instance.RPC(gameObject, "GetStunned", PhotonTargets.All);
         }
     }
 
