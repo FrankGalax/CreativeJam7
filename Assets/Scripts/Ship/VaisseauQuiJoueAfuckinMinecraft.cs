@@ -18,12 +18,18 @@ public class VaisseauQuiJoueAfuckinMinecraft : MonoBehaviour
     float m_fuckShitUpRange;
 
     PlanetFragment m_bestTarget;
+    GameObject m_CooldownFX;
+    private bool m_isShooting;
+    private float m_ShootingTimer;
+    public float ShootCooldown = 2.0f;
 
     // Use this for initialization
     void Start ()
     {
         m_fuckShitUpRange = fuckShitUpBaseRange;
         m_bestTarget = null;
+        m_CooldownFX = transform.Find("CooldownFX").gameObject;
+        m_CooldownFX.SetActive(false);
 	}
 	
 	// Update is called once per frame
@@ -37,7 +43,20 @@ public class VaisseauQuiJoueAfuckinMinecraft : MonoBehaviour
                 m_fuckShitUpRange = fuckShitUpBaseRange;
             }
         }
-	}
+        
+        if (m_isShooting)
+        {
+            m_ShootingTimer -= Time.deltaTime;
+            if (m_ShootingTimer < 0)
+            {
+                m_ShootingTimer = 0;
+                m_isShooting = false;
+            }
+        }
+
+        m_CooldownFX.SetActive(m_isShooting);
+        m_CooldownFX.transform.rotation = transform.rotation;
+    }
 
     public void AndMyAxe()
     {
@@ -52,6 +71,9 @@ public class VaisseauQuiJoueAfuckinMinecraft : MonoBehaviour
 
     public void PewPew()
     {
+        if (m_isShooting)
+            return;
+
         PlanetFragment target = FindBestTarget();
         if (target != null)
         {
@@ -61,6 +83,9 @@ public class VaisseauQuiJoueAfuckinMinecraft : MonoBehaviour
                 GameObject missileGO = INetwork.Instance.Instantiate(ResourceManager.GetPrefab("Missile"), transform.position, Quaternion.identity);
                 INetwork.Instance.RPC(missileGO, "Launch", PhotonTargets.MasterClient, target, launchDirection, transform.up, GetComponent<LeDouxDouxPlayerController>().m_Velocity);
             }
+
+            m_isShooting = true;
+            m_ShootingTimer = ShootCooldown;
         }
     }
 

@@ -35,6 +35,13 @@ public class EarthSeekingMissile : MonoBehaviour {
         if (m_remainingLifetime < 0.0f)
         {
             Destroy();
+            return;
+        }
+
+        if (m_target == null || m_target.IsDestroyed())
+        {
+            Destroy();
+            return;
         }
 
         Vector3 planetPos = GameObject.FindObjectOfType<Planet>().transform.position;
@@ -56,11 +63,6 @@ public class EarthSeekingMissile : MonoBehaviour {
         else
         {
             m_velocity += m_acceleration * distUnwrapperSurUnPlane.normalized * Time.deltaTime;
-        }
-        if (m_target.IsDestroyed())
-        {
-            Destroy();
-            return;
         }
 
         float sqrDist = distUnwrapperSurUnPlane.sqrMagnitude;

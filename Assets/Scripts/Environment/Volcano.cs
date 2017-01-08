@@ -6,13 +6,16 @@ public class Volcano : MonoBehaviour {
     public float Lifetime = 10.0f;
     public float Length = 0.0f;
     public float EruptionSpeed = 1.0f;
+    public Vector3 Direction = new Vector3(0.0f, 0.0f, 0.0f);
 
     bool m_IsComingOut = true;
     float m_Displacement = 0.0f;
-
-	// Use this for initialization
-	void Start ()
+    
+    // Use this for initialization
+    void Start ()
     {
+        transform.Rotate(Vector3.right, 90);
+
         if (INetwork.Instance.IsMaster())
         {
             Timer.Instance.Request(Lifetime, () => { INetwork.Instance.NetworkDestroy(gameObject); });
@@ -24,11 +27,8 @@ public class Volcano : MonoBehaviour {
     {
         if (m_IsComingOut)
         {
-            Vector3 direction = transform.up;
-            direction.Normalize();
-            transform.position += direction * EruptionSpeed * Time.deltaTime;
-
-            m_Displacement += EruptionSpeed * Time.deltaTime;
+            GetComponentInParent<Collider>().gameObject.transform.position += Direction * EruptionSpeed * Time.fixedDeltaTime;
+            m_Displacement += EruptionSpeed * Time.fixedDeltaTime;
             if (m_Displacement >= Length)
             {
                 m_IsComingOut = false;

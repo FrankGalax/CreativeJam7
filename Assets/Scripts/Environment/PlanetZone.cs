@@ -6,5 +6,6 @@ using System.Collections.Generic;
 public struct PlanetZone
 {
     public string Name;
+    public Color Color;
     public List<PlanetFragment> Fragments;
 }

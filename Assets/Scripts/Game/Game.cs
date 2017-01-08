@@ -15,7 +15,9 @@ public class Game : GameSingleton<Game>
 
     public GameObject WinCanvas;
     public GameObject GameOverCanvas;
-    public GameObject GameUICanvas { get; set; }
+    public GameObject MothershipCanvas;
+    public GameObject StandardShipCanvas;
+
     public int AttackUpgradeCost = 10;
     public int DefenseUpgradeCost = 10;
 
@@ -25,6 +27,7 @@ public class Game : GameSingleton<Game>
     {
         m_GameEnded = false;
         GameTime = MaxGameTime;
+        ColorizePlanet();
     }
 
     void Update()
@@ -69,7 +72,8 @@ public class Game : GameSingleton<Game>
     private void GameOver(PlanetZone destroyedZone)
     {
         m_GameEnded = true;
-        Destroy(GameUICanvas);
+        MothershipCanvas.SetActive(false);
+        StandardShipCanvas.SetActive(false);
         GameOverCanvas.SetActive(true);
         GameOverCanvas.transform.Find("ResourceText").GetComponent<Text>().text = "YOU GOT " + Resources + " PLANET SHARD" + (Resources > 1 ? "S" : "");
     }
@@ -77,7 +81,8 @@ public class Game : GameSingleton<Game>
     private void GameOver()
     {
         m_GameEnded = true;
-        Destroy(GameUICanvas);
+        MothershipCanvas.SetActive(false);
+        StandardShipCanvas.SetActive(false);
         GameOverCanvas.SetActive(true);
         GameOverCanvas.transform.Find("ResourceText").GetComponent<Text>().text = "YOU GOT " + Resources + " PLANET SHARD" + (Resources > 1 ? "S" : "");
     }
@@ -85,7 +90,8 @@ public class Game : GameSingleton<Game>
     private void Win()
     {
         m_GameEnded = true;
-        Destroy(GameUICanvas);
+        MothershipCanvas.SetActive(false);
+        StandardShipCanvas.SetActive(false);
         WinCanvas.SetActive(true);
         WinCanvas.transform.Find("ResourceText").GetComponent<Text>().text = "YOU GOT " + Resources + " PLANET SHARD" + (Resources > 1 ? "S" : "");
     }
@@ -94,5 +100,16 @@ public class Game : GameSingleton<Game>
     {
         INetwork.Instance.Disconnect();
         SceneManager.LoadScene("mainMenu");
+    }
+
+    public void ColorizePlanet()
+    {
+        Zones.ForEach(zone =>
+        {
+            zone.Fragments.ForEach(fragment =>
+            {
+                fragment.PrimaryColor = zone.Color;
+            });
+        });
     }
 }
