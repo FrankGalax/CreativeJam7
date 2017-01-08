@@ -131,7 +131,7 @@ public class Game : GameSingleton<Game>
     }
 
     [PunRPC]
-    private void Win(uint resources)
+    private void Win(int resources)
     {
         m_GameEnded = true;
         MothershipCanvas.SetActive(false);
