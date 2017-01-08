@@ -142,6 +142,8 @@ public class VaisseauQuiJoueAfuckinMinecraft : MonoBehaviour
 
         m_isShooting = true;
         m_ShootingTimer = ShootCooldown;
+
+        GetComponent<AudioSource>().Play();
     }
 
     PlanetFragment FindBestTarget()
