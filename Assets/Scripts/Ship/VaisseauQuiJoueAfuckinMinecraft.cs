@@ -111,6 +111,12 @@ public class VaisseauQuiJoueAfuckinMinecraft : MonoBehaviour
         return m_gottaGoFastBonusRemainingDuration > .0f;
     }
 
+    public bool IsRubberYourGlue()
+    {
+        return m_leaveMeTheFuckAloneBonusRemainingDuration > .0f;
+    }
+
+
     [PunRPC]
     public void ImRubberYoureGlue()
     {
