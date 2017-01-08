@@ -51,7 +51,7 @@ public class FatAssShip : MonoBehaviour
             CashSale[] benDuCashSale = GameObject.FindObjectsOfType<CashSale>();
             foreach (CashSale cash in benDuCashSale)
             {
-                if (Vector3.SqrMagnitude(cash.transform.position - transform.position) > pickShitUpDist)
+                if (Vector3.SqrMagnitude(cash.transform.position - transform.position) < pickShitUpDist*pickShitUpDist)
                 {
                     Game.Instance.Resources += cash.GetValue();
                     INetwork.Instance.NetworkDestroy(cash.gameObject);
