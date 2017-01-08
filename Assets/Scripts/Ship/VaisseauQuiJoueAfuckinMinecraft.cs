@@ -31,9 +31,18 @@ public class VaisseauQuiJoueAfuckinMinecraft : MonoBehaviour
         m_CooldownFX = transform.Find("CooldownFX").gameObject;
         m_CooldownFX.SetActive(false);
 	}
-	
-	// Update is called once per frame
-	void Update ()
+
+    public void OnDamageTaken()
+    {
+        StunComponent sc = GetComponent<StunComponent>();
+        if (sc != null)
+        {
+            sc.GetStunned();
+        }
+    }
+
+    // Update is called once per frame
+    void Update ()
     {
         if (m_fuckShitUpBonusRemainingDuration > .0f)
         {

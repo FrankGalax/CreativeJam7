@@ -54,9 +54,17 @@ public class FatAssShip : MonoBehaviour
                 if (Vector3.SqrMagnitude(cash.transform.position - transform.position) > pickShitUpDist)
                 {
                     Game.Instance.Resources += cash.GetValue();
-                    Destroy(cash.gameObject);
+                    INetwork.Instance.NetworkDestroy(cash.gameObject);
                 }
             }
+        }
+    }
+    public void OnDamageTaken()
+    {
+        StunComponent sc = GetComponent<StunComponent>();
+        if (sc != null)
+        {
+            sc.GetStunned();
         }
     }
 
