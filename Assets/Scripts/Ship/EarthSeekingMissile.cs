@@ -120,7 +120,6 @@ public class EarthSeekingMissile : MonoBehaviour {
         m_jerkTimer = jerkDuration;
     }
 
-    [PunRPC]
     public void HardLock()
     {
         m_isHardLocked = true;
