@@ -15,6 +15,7 @@ public class LeDouxPlayerController : MonoBehaviour
     private Vector3 m_Velocity;
     private bool m_ChangedDirection;
     private Vector3 m_NextCameraPosition;
+    private Quaternion m_NextCameraRotation;
     private bool m_offensiveBonusIsDown;
     private bool m_defensiveBonusIsDown;
 
@@ -50,7 +51,13 @@ public class LeDouxPlayerController : MonoBehaviour
         if (vertical == 0.0f && horizontal == 0.0f)
         {
             Vector3 velocityDirection = m_Velocity.normalized;
-            m_Velocity -= Decceleration * velocityDirection * Time.deltaTime;
+            float length = m_Velocity.magnitude;
+            length -= Decceleration * Time.deltaTime;
+            if (length < 0.0f)
+            {
+                length = 0.0f;
+            }
+            m_Velocity = velocityDirection * length;
         }
 
         m_Velocity += Acceleration * (camera.transform.up * vertical + camera.transform.right * horizontal) * Time.deltaTime;
@@ -66,8 +73,14 @@ public class LeDouxPlayerController : MonoBehaviour
         nextPosition = m_Planet.transform.position + (nextPosition - m_Planet.transform.position).normalized * (m_Planet.Radius + FlightHeight);
         transform.position = nextPosition;
 
-        Vector3 forward = Vector3.Lerp(transform.forward, m_Velocity, TurnRate * Time.deltaTime);
-        Vector3 nextNormal = (nextPosition - m_Planet.transform.position).normalized;
+        float dot = Vector3.Dot(Vector3.Cross(transform.forward, m_Velocity.normalized), m_Normal);
+        float angle = Mathf.Abs(dot) < 0.004f ? 0.0f : TurnRate * Time.deltaTime * Mathf.Sign(dot);
+
+        if (Mathf.Abs(angle) < 0.3f)
+            angle = 0.0f;
+
+        Vector3 forward = Quaternion.AngleAxis(angle, transform.up) * transform.forward;
+        Vector3 nextNormal = (transform.position - m_Planet.transform.position).normalized;
         forward = Vector3.ProjectOnPlane(forward, nextNormal).normalized;
 
         transform.rotation = Quaternion.LookRotation(forward, m_Normal);
@@ -78,10 +91,13 @@ public class LeDouxPlayerController : MonoBehaviour
     {
         Camera camera = Camera.main;
 
-        m_NextCameraPosition = m_Planet.transform.position + m_Normal * (m_Planet.Radius + CameraUpDistance);
+        m_NextCameraPosition = m_Planet.transform.position + (transform.position - m_Planet.transform.position).normalized * (m_Planet.Radius + CameraUpDistance);
         camera.transform.position = Vector3.Lerp(camera.transform.position, m_NextCameraPosition, 6.0f * Time.deltaTime);
-        camera.transform.rotation = Quaternion.LookRotation((transform.position - camera.transform.position).normalized, m_Tangent);
+        Vector3 cameraUp = camera.transform.up;
+        m_NextCameraRotation = Quaternion.LookRotation((transform.position - camera.transform.position).normalized, cameraUp);
+        camera.transform.rotation = Quaternion.Lerp(camera.transform.rotation, m_NextCameraRotation, 6.0f * Time.deltaTime);
     }
+
     private void UpdateActions()
     {
         bool offensiveBonus = Input.GetButtonDown("Fire1");
@@ -101,5 +117,4 @@ public class LeDouxPlayerController : MonoBehaviour
         m_offensiveBonusIsDown = offensiveBonus;
         m_defensiveBonusIsDown = defensiveBonus;
     }
-
 }
