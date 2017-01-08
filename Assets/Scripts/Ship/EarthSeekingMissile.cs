@@ -14,6 +14,8 @@ public class EarthSeekingMissile : MonoBehaviour {
 
     [SerializeField]
     float superLockInDist = 20.0f;
+    [SerializeField]
+    float distanceToDestroy = 0.5f;
 
     float m_acceleration;
     Vector3 m_velocity;
@@ -69,7 +71,7 @@ public class EarthSeekingMissile : MonoBehaviour {
 
         float sqrDist = distUnwrapperSurUnPlane.sqrMagnitude;
 
-        if (sqrDist < 1f)
+        if (sqrDist < distanceToDestroy)
         {
             if (INetwork.Instance.IsMaster() && m_canDmg)
             {
