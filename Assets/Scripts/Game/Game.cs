@@ -32,6 +32,9 @@ public class Game : GameSingleton<Game>
 
     void Update()
     {
+        if (!INetwork.Instance.IsMaster())
+            return;
+
         if (m_GameEnded)
             return;
 
@@ -69,6 +72,7 @@ public class Game : GameSingleton<Game>
         }
     }
 
+    [PunRPC]
     private void GameOver(PlanetZone destroyedZone)
     {
         m_GameEnded = true;
@@ -78,6 +82,7 @@ public class Game : GameSingleton<Game>
         GameOverCanvas.transform.Find("ResourceText").GetComponent<Text>().text = "YOU GOT " + Resources + " PLANET SHARD" + (Resources > 1 ? "S" : "");
     }
 
+    [PunRPC]
     private void GameOver()
     {
         m_GameEnded = true;
@@ -87,6 +92,7 @@ public class Game : GameSingleton<Game>
         GameOverCanvas.transform.Find("ResourceText").GetComponent<Text>().text = "YOU GOT " + Resources + " PLANET SHARD" + (Resources > 1 ? "S" : "");
     }
 
+    [PunRPC]
     private void Win()
     {
         m_GameEnded = true;
