@@ -12,21 +12,26 @@ public class Game : GameSingleton<Game>
     public int NbResourcesToWin = 100;
     public float MaxGameTime = 180.0f;
     public float GameTime { get; private set; }
+    public float EndGameExplosionSpeed = 0.5f;
 
     public GameObject WinCanvas;
     public GameObject GameOverCanvas;
     public GameObject MothershipCanvas;
     public GameObject StandardShipCanvas;
+    public GameObject EndGameExplosionSphere;
+    public GameObject Planet;
 
     public int AttackUpgradeCost = 10;
     public int DefenseUpgradeCost = 10;
 
     private bool m_GameEnded;
+    private bool m_GameLost;
     private int m_GameTimeSeconds;
 
     void Start()
     {
         m_GameEnded = false;
+        m_GameLost = false;
         GameTime = MaxGameTime;
         m_GameTimeSeconds = (int)GameTime;
         ColorizePlanet();
@@ -34,6 +39,23 @@ public class Game : GameSingleton<Game>
 
     void Update()
     {
+        if (m_GameLost)
+        {
+            if (EndGameExplosionSphere.transform.localScale.x > 45.0f)
+            {
+                return;
+            }
+
+            EndGameExplosionSphere.transform.localScale += new Vector3(EndGameExplosionSpeed, EndGameExplosionSpeed, EndGameExplosionSpeed);
+            if (Planet && EndGameExplosionSphere.transform.localScale.x > Planet.GetComponent<Planet>().Radius)
+            {
+                foreach (Renderer renderer in Planet.GetComponentsInChildren<Renderer>())
+                {
+                    renderer.enabled = false;
+                }
+            }
+        }
+
         if (!INetwork.Instance.IsMaster())
             return;
 
@@ -85,6 +107,7 @@ public class Game : GameSingleton<Game>
     private void GameOver(int reason, string zone, int resources)
     {
         m_GameEnded = true;
+        m_GameLost = true;
         MothershipCanvas.SetActive(false);
         StandardShipCanvas.SetActive(false);
         GameOverCanvas.SetActive(true);
