@@ -49,7 +49,7 @@ public class PlanetFragment : MonoBehaviour {
 
             GenerateResources(true);
 
-            Timer.Instance.Request(RepawnTime, () => Respawn());
+            Timer.Instance.Request(RepawnTime, Respawn);
         }
     }
 
@@ -68,9 +68,11 @@ public class PlanetFragment : MonoBehaviour {
         GetComponentInParent<Renderer>().enabled = false;
     }
 
+    [PunRPC]
     public void Respawn()
     {
         GetComponentInParent<DamageComponent>().Revive();
+        GetComponentInParent<Renderer>().enabled = true;
     }
     
     public bool IsDestroyed()
