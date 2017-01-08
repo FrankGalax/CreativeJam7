@@ -10,8 +10,11 @@ public class PlanetFragment : MonoBehaviour {
     public float RepawnTime = 0.0f;
     public float SpawnOffset = 1.0f;
     public float InitialCashVelocity = 1.0f;
+    public float VolcanoRateAfterDestruction = 0.005f;
 
     GameObject m_Volcano;
+    bool m_ShouldTryRespawn = false;
+
     public Color PrimaryColor
     {
         set
@@ -30,8 +33,19 @@ public class PlanetFragment : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
+        if (INetwork.Instance.IsMaster())
+        {
+            if (!GetComponentInParent<Renderer>().enabled && UnityEngine.Random.Range(0.0f, 1.0f) < VolcanoRateAfterDestruction)
+            {
+                SpawnVolcano();
+            }
 
-	}
+            if (m_ShouldTryRespawn)
+            {
+                TryRespawn();
+            }
+        }
+    }
 
     public void HandleDeath()
     {
@@ -39,17 +53,20 @@ public class PlanetFragment : MonoBehaviour {
 
         if (INetwork.Instance.IsMaster())
         {
-            if (!m_Volcano)
-            {
-                Vector3 direction = GetComponent<Renderer>().bounds.center - transform.position;
-                direction.Normalize();
-                m_Volcano = INetwork.Instance.Instantiate(ResourceManager.GetPrefab("Volcano"), GetComponent<Renderer>().bounds.center, Quaternion.LookRotation(direction));
-                INetwork.Instance.RPC(gameObject, "SetVolcanoParent", PhotonTargets.All, INetwork.Instance.GetViewId(m_Volcano));
-            }
-
+            SpawnVolcano();
             GenerateResources(true);
+            Timer.Instance.Request(RepawnTime, TryRespawn);
+        }
+    }
 
-            Timer.Instance.Request(RepawnTime, Respawn);
+    public void SpawnVolcano()
+    {
+        if (!m_Volcano)
+        {
+            Vector3 direction = GetComponent<Renderer>().bounds.center - transform.position;
+            direction.Normalize();
+            m_Volcano = INetwork.Instance.Instantiate(ResourceManager.GetPrefab("Volcano"), GetComponent<Renderer>().bounds.center, Quaternion.LookRotation(direction));
+            INetwork.Instance.RPC(gameObject, "SetVolcanoParent", PhotonTargets.All, INetwork.Instance.GetViewId(m_Volcano));
         }
     }
 
@@ -66,10 +83,18 @@ public class PlanetFragment : MonoBehaviour {
         GetComponentInParent<Renderer>().enabled = false;
     }
 
-    public void Respawn()
+    public void TryRespawn()
     {
-        GetComponentInParent<DamageComponent>().Revive();
-        INetwork.Instance.RPC(gameObject, "EnableRenderer", PhotonTargets.All);
+        if (!m_Volcano)
+        {
+            GetComponentInParent<DamageComponent>().Revive();
+            INetwork.Instance.RPC(gameObject, "EnableRenderer", PhotonTargets.All);
+            m_ShouldTryRespawn = false;
+        }
+        else
+        {
+            m_ShouldTryRespawn = true;
+        }
     }
 
     [PunRPC]
