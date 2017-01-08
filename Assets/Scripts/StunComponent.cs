@@ -32,7 +32,7 @@ public class StunComponent : MonoBehaviour {
                 lddpc.enabled = false;
             }
 
-            Renderer renderer = gameObject.GetComponent<Renderer>();
+            Renderer renderer = gameObject.GetComponentInChildren<Renderer>();
 
             renderer.enabled = !renderer.enabled;
 
