@@ -66,7 +66,6 @@ public class EarthSeekingMissile : MonoBehaviour {
         }
 
         float sqrDist = distUnwrapperSurUnPlane.sqrMagnitude;
-        Debug.Log("distance sqr: " + sqrDist);
 
         if (sqrDist < 1f)
         {
@@ -87,7 +86,7 @@ public class EarthSeekingMissile : MonoBehaviour {
         }
         else if (!m_isHardLocked && sqrDist < superLockInDist * superLockInDist)
         {
-            INetwork.Instance.RPC(gameObject, "HardLock", PhotonTargets.All);
+            HardLock();
         }
 
         Vector3 nextPosition = transform.position + m_velocity * Time.deltaTime;
