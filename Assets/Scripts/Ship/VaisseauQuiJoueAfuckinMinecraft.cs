@@ -42,6 +42,30 @@ public class VaisseauQuiJoueAfuckinMinecraft : MonoBehaviour
         m_CooldownFXs.ForEach(p => p.SetActive(false));
         m_TrusterFX = transform.Find("TrusterFX").gameObject;
         m_TrusterFX.SetActive(false);
+
+        if (INetwork.Instance.IsMine(gameObject))
+        {
+            int id = INetwork.Instance.GetId();
+            INetwork.Instance.RPC(gameObject, "SetColor", PhotonTargets.AllBuffered, id);
+        }
+    }
+
+    [PunRPC]
+    private void SetColor(int id)
+    {
+        List<MeshRenderer> meshRenderers = GetComponentsInChildren<MeshRenderer>().ToList();
+        switch (id)
+        {
+            case 1:
+                meshRenderers.ForEach(p => p.material.color = Color.red);
+                break;
+            case 2:
+                meshRenderers.ForEach(p => p.material.color = Color.green);
+                break;
+            case 3:
+                meshRenderers.ForEach(p => p.material.color = Color.blue);
+                break;
+        }
     }
 
     public void OnDamageTaken()
