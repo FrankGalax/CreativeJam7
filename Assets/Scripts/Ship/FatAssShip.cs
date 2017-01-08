@@ -78,14 +78,14 @@ public class FatAssShip : MonoBehaviour
                 case EDouxDouxUpgrades.EDouxDouxUpgrades_OFFENCE:
                     foreach (VaisseauQuiJoueAfuckinMinecraft ship in ships)
                     {
-                        ship.GottaGoFast();
+                        INetwork.Instance.RPC(ship.gameObject, "GottaGoFast", PhotonTargets.All);
                     }
                     m_offenseCD = offensePowerUp.coolDown;
                     break;
                 case EDouxDouxUpgrades.EDouxDouxUpgrades_DEFENCE:
                     foreach (VaisseauQuiJoueAfuckinMinecraft ship in ships)
                     {
-                        ship.ImRubberYoureGlue();
+                        INetwork.Instance.RPC(ship.gameObject, "ImRubberYoureGlue", PhotonTargets.All);
                     }
                     m_defenseCD = defensePowerUp.coolDown;
                     break;
