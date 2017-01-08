@@ -22,11 +22,13 @@ public class Game : GameSingleton<Game>
     public int DefenseUpgradeCost = 10;
 
     private bool m_GameEnded;
+    private int m_GameTimeSeconds;
 
     void Start()
     {
         m_GameEnded = false;
         GameTime = MaxGameTime;
+        m_GameTimeSeconds = (int)GameTime;
         ColorizePlanet();
     }
 
@@ -44,7 +46,7 @@ public class Game : GameSingleton<Game>
         {
             if (zone.Fragments.All(p => p.IsDestroyed()))
             {
-                GameOver(zone);
+                INetwork.Instance.RPC(gameObject, "GameOverZone", PhotonTargets.All, zone.Name);
                 return;
             }
 
@@ -53,27 +55,34 @@ public class Game : GameSingleton<Game>
 
         if (destroyedZonesCount >= MaxDestroyedZones)
         {
-            GameOver();
+            INetwork.Instance.RPC(gameObject, "GameOver", PhotonTargets.All);
             return;
         }
         
         GameTime -= Time.deltaTime;
+        int gameTimeSeconds = (int)GameTime;
+        if (gameTimeSeconds != m_GameTimeSeconds)
+        {
+            m_GameTimeSeconds = gameTimeSeconds;
+            INetwork.Instance.RPC(gameObject, "UpdateGameTime", PhotonTargets.Others, GameTime);
+        }
+
         if (GameTime < 0)
         {
             GameTime = 0;
             if (Resources >= NbResourcesToWin)
             {
-                Win();
+                INetwork.Instance.RPC(gameObject, "Win", PhotonTargets.All);
             }
             else
             {
-                GameOver();
+                INetwork.Instance.RPC(gameObject, "GameOver", PhotonTargets.All);
             }
         }
     }
 
     [PunRPC]
-    private void GameOver(PlanetZone destroyedZone)
+    private void GameOverZone(int destroyedZoneId)
     {
         m_GameEnded = true;
         MothershipCanvas.SetActive(false);
@@ -100,6 +109,12 @@ public class Game : GameSingleton<Game>
         StandardShipCanvas.SetActive(false);
         WinCanvas.SetActive(true);
         WinCanvas.transform.Find("ResourceText").GetComponent<Text>().text = "YOU GOT " + Resources + " PLANET SHARD" + (Resources > 1 ? "S" : "");
+    }
+
+    [PunRPC]
+    private void UpdateGameTime(float time)
+    {
+        GameTime = time;
     }
 
     public void MainMenu()

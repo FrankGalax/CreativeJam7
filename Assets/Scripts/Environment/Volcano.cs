@@ -32,10 +32,10 @@ public class Volcano : MonoBehaviour {
             RaycastHit hit;
             if (Physics.Linecast(transform.position, transform.up * Length + transform.position, out hit))
             {
-                DamageComponent damageComponent = hit.collider.GetComponentInParent<DamageComponent>();
+                DamageComponent damageComponent = hit.collider.GetComponent<DamageComponent>();
                 if (damageComponent)
                 {
-                    INetwork.Instance.RPC(hit.collider.gameObject, "TakeDamage", PhotonTargets.MasterClient);
+                    INetwork.Instance.RPC(damageComponent.gameObject, "TakeDamage", PhotonTargets.MasterClient);
                 }
             }
         }

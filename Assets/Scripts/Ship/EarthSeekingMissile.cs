@@ -21,11 +21,13 @@ public class EarthSeekingMissile : MonoBehaviour {
     PlanetFragment m_target;
     float m_remainingLifetime;
     bool m_isHardLocked;
-
-	// Use this for initialization
-	void Start () {
+    bool m_canDmg {get; set;}
+    public EarthSeekingMissile[] otherMissiles;
+    // Use this for initialization
+    void Start () {
         m_isHardLocked = false;
         m_remainingLifetime = 6.0f;
+        m_canDmg = true;
     }
     
     // Update is called once per frame
@@ -69,9 +71,14 @@ public class EarthSeekingMissile : MonoBehaviour {
 
         if (sqrDist < 1f)
         {
-            if (INetwork.Instance.IsMaster())
+            if (INetwork.Instance.IsMaster() && m_canDmg)
             {
                 INetwork.Instance.RPC(m_target.gameObject, "TakeDamage", PhotonTargets.MasterClient);
+
+                foreach (EarthSeekingMissile missile in otherMissiles)
+                {
+                    missile.m_canDmg = false;
+                }
             }
             Destroy();
         }
@@ -107,7 +114,7 @@ public class EarthSeekingMissile : MonoBehaviour {
     {
         Destroy(gameObject);
     }
-    
+
     public void Launch(PlanetFragment target, Vector3 direction, Vector3 upVect, Vector3 shipSpeed)
     {
         transform.rotation = Quaternion.LookRotation(direction, upVect);
