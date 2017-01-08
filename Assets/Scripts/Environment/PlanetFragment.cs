@@ -49,8 +49,7 @@ public class PlanetFragment : MonoBehaviour {
     [PunRPC]
     private void HideFragment()
     {
-        GameObject layer1 = transform.Find("graphics/Layer1Fragment").gameObject;
-        layer1.GetComponent<Renderer>().enabled = false;
+        GetComponentInParent<Renderer>().enabled = false;
     }
 
     public void Respawn()
