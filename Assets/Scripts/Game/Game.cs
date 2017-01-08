@@ -1,6 +1,8 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class Game : GameSingleton<Game>
 {
@@ -8,12 +10,21 @@ public class Game : GameSingleton<Game>
     public int MaxDestroyedZones = 20;
     public int Resources { get; set; }
     public int NbResourcesToWin = 100;
+    public float MaxGameTime = 180.0f;
+    public float GameTime { get; private set; }
+
+    public GameObject WinCanvas;
+    public GameObject GameOverCanvas;
+    public GameObject GameUICanvas { get; set; }
+    public int AttackUpgradeCost = 10;
+    public int DefenseUpgradeCost = 10;
 
     private bool m_GameEnded;
 
     void Start()
     {
         m_GameEnded = false;
+        GameTime = MaxGameTime;
     }
 
     void Update()
@@ -39,28 +50,49 @@ public class Game : GameSingleton<Game>
             GameOver();
             return;
         }
-
-        if (Resources >= NbResourcesToWin)
+        
+        GameTime -= Time.deltaTime;
+        if (GameTime < 0)
         {
-            Win();
-            return;
+            GameTime = 0;
+            if (Resources >= NbResourcesToWin)
+            {
+                Win();
+            }
+            else
+            {
+                GameOver();
+            }
         }
     }
 
     private void GameOver(PlanetZone destroyedZone)
     {
         m_GameEnded = true;
-        Debug.Log("Game over");
+        Destroy(GameUICanvas);
+        GameObject canvas = Instantiate(GameOverCanvas);
+        canvas.transform.Find("ResourceText").GetComponent<Text>().text = "YOU GOT " + Resources + " PLANET SHARD" + (Resources > 1 ? "S" : "");
     }
 
     private void GameOver()
     {
         m_GameEnded = true;
-        Debug.Log("Game over");
+        Destroy(GameUICanvas);
+        GameObject canvas = Instantiate(GameOverCanvas);
+        canvas.transform.Find("ResourceText").GetComponent<Text>().text = "YOU GOT " + Resources + " PLANET SHARD" + (Resources > 1 ? "S" : "");
     }
 
     private void Win()
     {
         m_GameEnded = true;
+        Destroy(GameUICanvas);
+        GameObject canvas = Instantiate(WinCanvas);
+        canvas.transform.Find("ResourceText").GetComponent<Text>().text = "YOU GOT " + Resources + " PLANET SHARD" + (Resources > 1 ? "S" : "");
+    }
+
+    public void MainMenu()
+    {
+        INetwork.Instance.Disconnect();
+        SceneManager.LoadScene("mainMenu");
     }
 }
