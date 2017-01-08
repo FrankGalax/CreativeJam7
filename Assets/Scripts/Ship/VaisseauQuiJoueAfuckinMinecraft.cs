@@ -9,6 +9,8 @@ public class VaisseauQuiJoueAfuckinMinecraft : MonoBehaviour
     float fuckShitUpBonusRange = 0.05f;
     [SerializeField]
     float fuckShitUpBonusDuration = 5.0f;
+    [SerializeField]
+    uint fuckShitUpNbMissile = 4;
 
     float m_fuckShitUpBonusRemainingDuration = 0.0f;
     float m_fuckShitUpRange;
@@ -33,18 +35,6 @@ public class VaisseauQuiJoueAfuckinMinecraft : MonoBehaviour
                 m_fuckShitUpRange = fuckShitUpBaseRange;
             }
         }
-
-        PlanetFragment frag = FindBestTarget();
-        if (m_bestTarget != frag)
-        {
-            if (m_bestTarget != null)
-            {
-                m_bestTarget.gameObject.transform.localScale = Vector3.one;
-            }
-
-            frag.gameObject.transform.localScale = 1.5f * Vector3.one;
-            m_bestTarget = frag;
-        }
 	}
 
     public void AndMyAxe()
@@ -63,7 +53,12 @@ public class VaisseauQuiJoueAfuckinMinecraft : MonoBehaviour
         PlanetFragment target = FindBestTarget();
         if (target != null)
         {
-            target.TakeDamage();
+            for (uint missileIndex = 0; missileIndex < fuckShitUpNbMissile; missileIndex++)
+            {
+                Vector3 launchDirection = Quaternion.AngleAxis(Random.Range(-25, 25), transform.up) * ((missileIndex % 2 == 0 ? 1 : -1) * transform.right);
+                GameObject missileGO = Instantiate(ResourceManager.GetPrefab("Missile"), transform.position, Quaternion.identity) as GameObject;
+                missileGO.GetComponent<EarthSeekingMissile>().Launch(target, launchDirection, transform.up, GetComponent<LeDouxDouxPlayerController>().m_Velocity);
+            }
         }
     }
 
