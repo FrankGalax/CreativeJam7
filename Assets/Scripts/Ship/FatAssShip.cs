@@ -80,6 +80,7 @@ public class FatAssShip : MonoBehaviour
                     {
                         INetwork.Instance.RPC(ship.gameObject, "GottaGoFast", PhotonTargets.All);
                     }
+                    Game.Instance.Resources -= offensePowerUp.price;
                     m_offenseCD = offensePowerUp.coolDown;
                     break;
                 case EDouxDouxUpgrades.EDouxDouxUpgrades_DEFENCE:
@@ -87,6 +88,7 @@ public class FatAssShip : MonoBehaviour
                     {
                         INetwork.Instance.RPC(ship.gameObject, "ImRubberYoureGlue", PhotonTargets.All);
                     }
+                    Game.Instance.Resources -= defensePowerUp.price;
                     m_defenseCD = defensePowerUp.coolDown;
                     break;
             }
@@ -98,9 +100,9 @@ public class FatAssShip : MonoBehaviour
         switch (iReallyReallyNeedThis)
         {
             case EDouxDouxUpgrades.EDouxDouxUpgrades_OFFENCE:
-                return Game.Instance.Resources >= offensePowerUp.price && m_offenseCD >= 0.0f;
+                return Game.Instance.Resources >= offensePowerUp.price && m_offenseCD <= 0.0f;
             case EDouxDouxUpgrades.EDouxDouxUpgrades_DEFENCE:
-                return Game.Instance.Resources >= defensePowerUp.price && m_defenseCD >= 0.0f;
+                return Game.Instance.Resources >= defensePowerUp.price && m_defenseCD <= 0.0f;
         }
         return false;
     }
