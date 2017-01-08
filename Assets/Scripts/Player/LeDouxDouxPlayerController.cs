@@ -15,10 +15,12 @@ public class LeDouxDouxPlayerController : MonoBehaviour
 
     private Planet m_Planet;
     private Vector3 m_Normal;
-    public Vector3 m_Velocity;
+    public Vector3 m_Velocity { get; private set; }
     private bool m_ChangedDirection;
     private Vector3 m_NextCameraPosition;
     private bool m_isShooting;
+    private Vector3 m_LastTarget;
+    private bool m_LastTargetSet;
 
     void Awake()
     {
@@ -29,10 +31,12 @@ public class LeDouxDouxPlayerController : MonoBehaviour
     {
         m_Velocity = Vector3.zero;
 
-        transform.position = RoundUp(transform.position, Vector3.zero);
+        transform.position = m_Planet.transform.position + (transform.position - m_Planet.transform.position).normalized * (m_Planet.Radius + FlightHeight);
         m_Normal = (transform.position - m_Planet.transform.position).normalized;
         Vector3 forward = Vector3.ProjectOnPlane(transform.forward, m_Normal).normalized;
         transform.rotation = Quaternion.LookRotation(forward, m_Normal);
+        m_LastTargetSet = false;
+        m_isShooting = false;
     }
 
     void Update()
@@ -75,8 +79,10 @@ public class LeDouxDouxPlayerController : MonoBehaviour
         {
             m_Velocity = m_Velocity.normalized * MaxSpeed;
         }
-        
-        transform.position = RoundUp(transform.position, m_Velocity);
+
+        Vector3 nextPosition = transform.position + m_Velocity * Time.deltaTime;
+        nextPosition = m_Planet.transform.position + (nextPosition - m_Planet.transform.position).normalized * (m_Planet.Radius + FlightHeight);
+        transform.position = nextPosition;
 
         Vector3 nextNormal = (transform.position - m_Planet.transform.position).normalized;
         Vector3 forward = Vector3.ProjectOnPlane(transform.forward, nextNormal).normalized;
@@ -101,19 +107,20 @@ public class LeDouxDouxPlayerController : MonoBehaviour
 
         transform.rotation = Quaternion.LookRotation(transform.forward, Quaternion.AngleAxis(-velocityForwardAngle * RollAngleModifier * m_Velocity.magnitude * 1.25f, transform.forward) * m_Normal);
 
-        Vector3 predictiveVelocity = Quaternion.AngleAxis(velocityForwardAngle * LookAheadAngleModifier, transform.up) * transform.forward * m_Velocity.magnitude;
-        Vector3 target = PredictiveRoundUp(transform.position, predictiveVelocity);
-
+        Vector3 target = transform.position + transform.forward;
         Vector3 targetNormal = (target - m_Planet.transform.position).normalized;
-        Vector3 targetForward = predictiveVelocity.magnitude < 0.001f ?
-            Vector3.Cross(rightCancelRoll, targetNormal) :
-            Vector3.ProjectOnPlane(predictiveVelocity, transform.up).normalized;
+        target = m_Planet.transform.position + targetNormal * (m_Planet.Radius + FlightHeight);
+
+        Vector3 targetForward = Vector3.Cross(transform.right, targetNormal);
 
         m_NextCameraPosition = target + (targetNormal * Mathf.Sin(cameraShipAngleRad) - targetForward * Mathf.Cos(cameraShipAngleRad)) * CameraShipDistance; 
 
         camera.transform.position = Vector3.Lerp(camera.transform.position, m_NextCameraPosition, 6.0f * Time.deltaTime);
         Vector3 normal = (camera.transform.position - m_Planet.transform.position).normalized;
-        camera.transform.rotation = Quaternion.LookRotation((target - camera.transform.position).normalized, /*Quaternion.AngleAxis(-velocityForwardAngle * RollAngleModifier * m_Velocity.magnitude * 0.5f, transform.forward) **/ normal);
+        camera.transform.rotation = Quaternion.LookRotation((target - camera.transform.position).normalized, Quaternion.AngleAxis(-velocityForwardAngle * RollAngleModifier * m_Velocity.magnitude * 0.5f, transform.forward) * normal);
+
+        m_LastTarget = target;
+        m_LastTargetSet = true;
     }
 
     private void UpdateShoot()
@@ -126,31 +133,5 @@ public class LeDouxDouxPlayerController : MonoBehaviour
         }
 
         m_isShooting = shoot;
-    }
-
-    private Vector3 RoundUp(Vector3 previous, Vector3 velocity)
-    {
-        float speed = velocity.magnitude;
-        Vector3 direction = velocity.normalized;
-        float radius = m_Planet.Radius + FlightHeight;
-        float angularSpeed = speed / radius;
-        float deltaAngle = angularSpeed * Time.fixedDeltaTime;
-        Vector3 displacement = radius * Mathf.Tan(deltaAngle) * direction;
-        Vector3 next = previous + displacement;
-        return m_Planet.transform.position + (next - m_Planet.transform.position).normalized * radius;
-    }
-
-    private Vector3 PredictiveRoundUp(Vector3 previous, Vector3 velocity)
-    {
-        float speed = velocity.magnitude;
-        Vector3 direction = velocity.normalized;
-        float radius = m_Planet.Radius + FlightHeight;
-        float angularSpeed = speed / radius;
-        float deltaAngle = angularSpeed * LookAhead * Time.fixedDeltaTime;
-        if (deltaAngle > 0.3f)
-            deltaAngle = 0.3f;
-        Vector3 displacement = radius * Mathf.Tan(deltaAngle) * direction;
-        Vector3 next = previous + displacement;
-        return m_Planet.transform.position + (next - m_Planet.transform.position).normalized * radius;
     }
 }
