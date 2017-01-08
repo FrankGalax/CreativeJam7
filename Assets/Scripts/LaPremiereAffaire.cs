@@ -19,12 +19,17 @@ public class LaPremiereAffaire : MonoBehaviour
         playerSpawnPoints.Add(playerSpawnPointsContainer.Find("FirstPlayerSpawnPoint"));
 
         int id = network.GetId();
-        GameObject prefab = id == 0 ? ResourceManager.GetPrefab("Mothership") : ResourceManager.GetPrefab("Standardship");
+        bool isMothership = id == 0;
+        GameObject prefab = isMothership ? ResourceManager.GetPrefab("Mothership") : ResourceManager.GetPrefab("Standardship");
         if (network.GetPlayerCount() == 1 && network.GetShipId() == 1)
         {
             id = 1;
+            isMothership = false;
             prefab = ResourceManager.GetPrefab("Standardship");
         }
         INetwork.Instance.Instantiate(prefab, playerSpawnPoints[id].transform.position, playerSpawnPoints[id].transform.rotation);
+
+        GameObject gameUIPrefab = isMothership ? ResourceManager.GetPrefab("MothershipCanvas") : ResourceManager.GetPrefab("StandardshipCanvas");
+        Instantiate(gameUIPrefab);
 	}
 }

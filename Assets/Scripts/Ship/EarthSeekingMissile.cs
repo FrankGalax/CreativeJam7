@@ -70,7 +70,7 @@ public class EarthSeekingMissile : MonoBehaviour {
 
         if ( sqrDist < 0.1f)
         {
-            m_target.TakeDamage();
+            INetwork.Instance.RPC(m_target.gameObject, "TakeDamage", PhotonTargets.MasterClient);
             Destroy();
         }
 
